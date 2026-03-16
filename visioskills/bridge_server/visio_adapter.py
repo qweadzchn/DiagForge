@@ -18,6 +18,7 @@ class SessionState:
     session_id: str
     file_path: Optional[str]
     visible: bool
+    doc_name: str
 
 
 class _ComWorker:
@@ -71,8 +72,13 @@ class VisioAdapter:
 
     def create_session(self, file_path: Optional[str], visible: bool) -> Dict[str, Any]:
         session_id = str(uuid.uuid4())
-        self._run_sync(self._create_or_open_doc_impl, session_id, file_path, visible)
-        state = SessionState(session_id=session_id, file_path=file_path, visible=visible)
+        created = self._run_sync(self._create_or_open_doc_impl, session_id, file_path, visible)
+        state = SessionState(
+            session_id=session_id,
+            file_path=file_path,
+            visible=visible,
+            doc_name=created["doc_name"],
+        )
         with self._sessions_lock:
             self._sessions[session_id] = state
         return {"session_id": session_id, "file_path": file_path}
@@ -190,11 +196,11 @@ class VisioAdapter:
         return app
 
     def _get_doc(self, app, session_id: str):
-        # Use hidden metadata in document title to locate session doc reliably.
-        for doc in app.Documents:
-            if getattr(doc, "Comment", "") == session_id:
-                return doc
-        raise VisioError(f"No open Visio document bound to session {session_id}")
+        state = self._assert_session(session_id)
+        try:
+            return app.Documents.Item(state.doc_name)
+        except Exception as e:
+            raise VisioError(f"No open Visio document bound to session {session_id} ({state.doc_name})") from e
 
     def _get_page(self, doc, page_name: Optional[str]):
         if page_name:
@@ -209,7 +215,6 @@ class VisioAdapter:
         app = self._get_app()
         app.Visible = visible
 
-        doc = None
         if file_path and os.path.exists(file_path):
             doc = app.Documents.Open(file_path)
         elif file_path:
@@ -218,8 +223,7 @@ class VisioAdapter:
         else:
             doc = app.Documents.Add("")
 
-        doc.Comment = session_id
-        return {"ok": True}
+        return {"ok": True, "doc_name": str(doc.Name)}
 
     def _add_shape_impl(
         self,
