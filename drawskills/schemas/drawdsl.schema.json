@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://png2vsdx.local/schemas/drawdsl.schema.json",
+  "title": "DrawDSL",
+  "type": "object",
+  "required": ["version", "canvas", "nodes", "edges"],
+  "properties": {
+    "version": { "type": "string" },
+    "skill_id": { "type": "string" },
+    "canvas": {
+      "type": "object",
+      "required": ["unit"],
+      "properties": {
+        "unit": { "type": "string", "enum": ["in", "cm", "mm"] },
+        "page_name": { "type": "string" }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "shape", "x", "y", "width", "height"],
+        "properties": {
+          "id": { "type": "string" },
+          "shape": { "type": "string" },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "width": { "type": "number" },
+          "height": { "type": "number" },
+          "text": { "type": "string" },
+          "style": {
+            "type": "object",
+            "properties": {
+              "line_rgb": {
+                "type": "array",
+                "items": { "type": "integer", "minimum": 0, "maximum": 255 },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "fill_rgb": {
+                "type": "array",
+                "items": { "type": "integer", "minimum": 0, "maximum": 255 },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "font_rgb": {
+                "type": "array",
+                "items": { "type": "integer", "minimum": 0, "maximum": 255 },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "font_name": { "type": "string" },
+              "font_size_pt": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "from", "to"],
+        "properties": {
+          "id": { "type": "string" },
+          "from": { "type": "string" },
+          "to": { "type": "string" }
+        }
+      }
+    }
+  }
+}
