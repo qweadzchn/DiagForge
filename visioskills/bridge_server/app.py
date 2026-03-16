@@ -73,6 +73,16 @@ class SetShapeTextStyleRequest(BaseModel):
     font_rgb: Optional[tuple[int, int, int]] = None
 
 
+class SetShapeTextBlockRequest(BaseModel):
+    request_id: str
+    session_id: str
+    shape_id: int
+    txt_pin_x: Optional[float] = None
+    txt_pin_y: Optional[float] = None
+    txt_width: Optional[float] = None
+    txt_height: Optional[float] = None
+
+
 class SetShapeColorRequest(BaseModel):
     request_id: str
     session_id: str
@@ -246,6 +256,24 @@ def set_text_style(req: SetShapeTextStyleRequest, authorization: Optional[str] =
             font_name=req.font_name,
             font_size_pt=req.font_size_pt,
             font_rgb=req.font_rgb,
+        )
+        return {"ok": True, "data": data}
+
+    return GenericOk(**_idempotent(req.request_id, op))
+
+
+@app.post("/shape/set_text_block", response_model=GenericOk)
+def set_text_block(req: SetShapeTextBlockRequest, authorization: Optional[str] = Header(default=None)) -> GenericOk:
+    _check_auth(authorization)
+
+    def op() -> Dict[str, Any]:
+        data = adapter.set_shape_text_block(
+            session_id=req.session_id,
+            shape_id=req.shape_id,
+            txt_pin_x=req.txt_pin_x,
+            txt_pin_y=req.txt_pin_y,
+            txt_width=req.txt_width,
+            txt_height=req.txt_height,
         )
         return {"ok": True, "data": data}
 

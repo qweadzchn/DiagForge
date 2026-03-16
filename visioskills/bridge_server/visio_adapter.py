@@ -143,6 +143,26 @@ class VisioAdapter:
             font_rgb,
         )
 
+    def set_shape_text_block(
+        self,
+        session_id: str,
+        shape_id: int,
+        txt_pin_x: Optional[float],
+        txt_pin_y: Optional[float],
+        txt_width: Optional[float],
+        txt_height: Optional[float],
+    ) -> Dict[str, Any]:
+        self._assert_session(session_id)
+        return self._run_sync(
+            self._set_shape_text_block_impl,
+            session_id,
+            shape_id,
+            txt_pin_x,
+            txt_pin_y,
+            txt_width,
+            txt_height,
+        )
+
     def set_shape_colors(
         self,
         session_id: str,
@@ -321,6 +341,31 @@ class VisioAdapter:
 
         return {"shape_id": shape_id, "updated": True}
 
+    def _set_shape_text_block_impl(
+        self,
+        session_id: str,
+        shape_id: int,
+        txt_pin_x: Optional[float],
+        txt_pin_y: Optional[float],
+        txt_width: Optional[float],
+        txt_height: Optional[float],
+    ) -> Dict[str, Any]:
+        app = self._get_app()
+        doc = self._get_doc(app, session_id)
+        page = self._get_page(doc, None)
+        shp = page.Shapes.ItemFromID(shape_id)
+
+        if txt_pin_x is not None:
+            shp.CellsU("TxtPinX").ResultIU = float(txt_pin_x)
+        if txt_pin_y is not None:
+            shp.CellsU("TxtPinY").ResultIU = float(txt_pin_y)
+        if txt_width is not None:
+            shp.CellsU("TxtWidth").ResultIU = float(txt_width)
+        if txt_height is not None:
+            shp.CellsU("TxtHeight").ResultIU = float(txt_height)
+
+        return {"shape_id": shape_id, "updated": True}
+
     def _set_shape_colors_impl(
         self,
         session_id: str,
@@ -354,10 +399,28 @@ class VisioAdapter:
         dst = page.Shapes.ItemFromID(to_shape_id)
 
         conn = page.Drop(app.ConnectorToolDataObject, 0, 0)
-        conn.CellsU("BeginX").GlueTo(src.CellsU("PinX"))
-        conn.CellsU("EndX").GlueTo(dst.CellsU("PinX"))
+        self._glue_connector_end(conn, "BeginX", src)
+        self._glue_connector_end(conn, "EndX", dst)
 
         return {"connector_id": int(conn.ID), "from_shape_id": from_shape_id, "to_shape_id": to_shape_id}
+
+    def _glue_connector_end(self, connector, endpoint_cell: str, target_shape) -> None:
+        cell = connector.CellsU(endpoint_cell)
+        # Prefer 2D center pin; fallback to 1D line endpoints for line-like shapes.
+        try:
+            cell.GlueTo(target_shape.CellsU("PinX"))
+            return
+        except Exception:
+            pass
+
+        for fallback in ("BeginX", "EndX"):
+            try:
+                cell.GlueTo(target_shape.CellsU(fallback))
+                return
+            except Exception:
+                continue
+
+        raise VisioError(f"Cannot glue connector endpoint {endpoint_cell} to target shape {target_shape.ID}")
 
     def _save_session_impl(self, session_id: str, save_path: Optional[str]) -> Dict[str, Any]:
         app = self._get_app()

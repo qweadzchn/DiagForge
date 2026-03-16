@@ -115,6 +115,27 @@ class VisioBridgeClient:
             },
         )
 
+    def set_text_block(
+        self,
+        session_id: str,
+        shape_id: int,
+        txt_pin_x: Optional[float] = None,
+        txt_pin_y: Optional[float] = None,
+        txt_width: Optional[float] = None,
+        txt_height: Optional[float] = None,
+    ) -> Dict[str, Any]:
+        return self._post(
+            "/shape/set_text_block",
+            {
+                "session_id": session_id,
+                "shape_id": shape_id,
+                "txt_pin_x": txt_pin_x,
+                "txt_pin_y": txt_pin_y,
+                "txt_width": txt_width,
+                "txt_height": txt_height,
+            },
+        )
+
     def set_colors(
         self,
         session_id: str,
