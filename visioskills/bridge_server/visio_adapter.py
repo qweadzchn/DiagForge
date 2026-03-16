@@ -332,8 +332,8 @@ class VisioAdapter:
         if text is not None:
             shp.Text = text
         if font_name:
-            # Char.Font stores a font ID; FONTID("name") resolves it safely.
-            shp.CellsU("Char.Font").FormulaU = f'FONTID("{font_name}")'
+            # Use direct quoted face name for broad compatibility across Visio installs.
+            shp.CellsU("Char.Font").FormulaU = f'"{font_name}"'
         if font_size_pt is not None:
             # Char.Size uses drawing units internally; keep explicit point unit.
             shp.CellsU("Char.Size").FormulaU = f"{float(font_size_pt)} pt"
