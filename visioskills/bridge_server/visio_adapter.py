@@ -332,9 +332,11 @@ class VisioAdapter:
         if text is not None:
             shp.Text = text
         if font_name:
-            shp.CellsU("Char.Font").FormulaU = f'"{font_name}"'
+            # Char.Font stores a font ID; FONTID("name") resolves it safely.
+            shp.CellsU("Char.Font").FormulaU = f'FONTID("{font_name}")'
         if font_size_pt is not None:
-            shp.CellsU("Char.Size").ResultIU = float(font_size_pt)
+            # Char.Size uses drawing units internally; keep explicit point unit.
+            shp.CellsU("Char.Size").FormulaU = f"{float(font_size_pt)} pt"
         if font_rgb is not None:
             r, g, b = font_rgb
             shp.CellsU("Char.Color").FormulaU = f"RGB({int(r)},{int(g)},{int(b)})"
@@ -386,7 +388,7 @@ class VisioAdapter:
             r, g, b = fill_rgb
             shp.CellsU("FillForegnd").FormulaU = f"RGB({int(r)},{int(g)},{int(b)})"
         if line_weight_pt is not None:
-            shp.CellsU("LineWeight").ResultIU = float(line_weight_pt)
+            shp.CellsU("LineWeight").FormulaU = f"{float(line_weight_pt)} pt"
 
         return {"shape_id": shape_id, "updated": True}
 
