@@ -8,7 +8,10 @@ from typing import Any, Dict, Optional
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 
-from .visio_adapter import VisioAdapter, VisioError
+try:
+    from .visio_adapter import VisioAdapter, VisioError
+except ImportError:  # allows `uvicorn app:app` from this directory
+    from visio_adapter import VisioAdapter, VisioError
 
 
 APP_NAME = "png2vsdx-visio-bridge"
