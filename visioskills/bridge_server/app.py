@@ -92,6 +92,20 @@ class SetShapeColorRequest(BaseModel):
     line_weight_pt: Optional[float] = None
 
 
+class AlignShapesRequest(BaseModel):
+    request_id: str
+    session_id: str
+    shape_ids: list[int]
+    mode: str = Field(description="left|right|center_x|top|bottom|center_y")
+
+
+class DistributeShapesRequest(BaseModel):
+    request_id: str
+    session_id: str
+    shape_ids: list[int]
+    axis: str = Field(description="horizontal|vertical")
+
+
 class ConnectShapesRequest(BaseModel):
     request_id: str
     session_id: str
@@ -292,6 +306,28 @@ def set_colors(req: SetShapeColorRequest, authorization: Optional[str] = Header(
             fill_rgb=req.fill_rgb,
             line_weight_pt=req.line_weight_pt,
         )
+        return {"ok": True, "data": data}
+
+    return GenericOk(**_idempotent(req.request_id, op))
+
+
+@app.post("/shape/align", response_model=GenericOk)
+def align_shapes(req: AlignShapesRequest, authorization: Optional[str] = Header(default=None)) -> GenericOk:
+    _check_auth(authorization)
+
+    def op() -> Dict[str, Any]:
+        data = adapter.align_shapes(req.session_id, req.shape_ids, req.mode)
+        return {"ok": True, "data": data}
+
+    return GenericOk(**_idempotent(req.request_id, op))
+
+
+@app.post("/shape/distribute", response_model=GenericOk)
+def distribute_shapes(req: DistributeShapesRequest, authorization: Optional[str] = Header(default=None)) -> GenericOk:
+    _check_auth(authorization)
+
+    def op() -> Dict[str, Any]:
+        data = adapter.distribute_shapes(req.session_id, req.shape_ids, req.axis)
         return {"ok": True, "data": data}
 
     return GenericOk(**_idempotent(req.request_id, op))

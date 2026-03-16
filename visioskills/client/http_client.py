@@ -155,6 +155,18 @@ class VisioBridgeClient:
             },
         )
 
+    def align_shapes(self, session_id: str, shape_ids: list[int], mode: str) -> Dict[str, Any]:
+        return self._post(
+            "/shape/align",
+            {"session_id": session_id, "shape_ids": shape_ids, "mode": mode},
+        )
+
+    def distribute_shapes(self, session_id: str, shape_ids: list[int], axis: str) -> Dict[str, Any]:
+        return self._post(
+            "/shape/distribute",
+            {"session_id": session_id, "shape_ids": shape_ids, "axis": axis},
+        )
+
     def connect_shapes(self, session_id: str, from_shape_id: int, to_shape_id: int) -> Dict[str, Any]:
         return self._post(
             "/shape/connect",

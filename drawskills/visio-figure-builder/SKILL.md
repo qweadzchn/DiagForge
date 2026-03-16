@@ -17,12 +17,27 @@ description: Build publication-style figures in Microsoft Visio through the png2
 ## Default style preset (research baseline)
 
 - Font family: **Times New Roman**
-- Font size: **11 pt** (title inside node can be 12 pt)
+- Font size hierarchy:
+  - Main block title: **11.5–12 pt**
+  - Standard module label: **9.5–10.5 pt**
+  - IOU/footnote row: **9.5–10 pt**
 - Text color: `RGB(20,20,20)`
 - Line color: `RGB(40,40,40)`
-- Line weight: `1.0~1.4 pt`
+- Line weight: `0.9~1.2 pt`
 - Fill color: light neutral/pastel (avoid high saturation)
 - Spacing: keep consistent horizontal/vertical gaps
+
+## Global layout playbook (must follow)
+
+1. Divide canvas into 4 lanes before drawing:
+   - Left: model macro pipeline
+   - Middle-top: backbone sequence
+   - Middle-center: neck fusion graph
+   - Right: module detail stacks (CBS/c2f)
+2. Lock a grid step first (e.g., 0.9~1.1 in) and place nodes on the grid.
+3. Create all nodes first, then run `/shape/align` and `/shape/distribute` per row/column.
+4. Draw connectors after alignment (avoid early connector clutter).
+5. Apply style as final pass (font/colors/line width/text block).
 
 ## Execution pipeline
 
@@ -65,3 +80,5 @@ description: Build publication-style figures in Microsoft Visio through the png2
 
 - For color/typography presets and journal-facing defaults, read:
   - `references/research-figure-guidelines.md`
+- For layout tuning and iteration lessons, read:
+  - `references/layout-iteration-notes.md`

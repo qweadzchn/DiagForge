@@ -19,6 +19,10 @@
   - 选中图形
 - `POST /shape/update_geometry`
   - 改坐标与尺寸（PinX/PinY/Width/Height）
+- `POST /shape/align`
+  - 对齐一组图形（left/right/center_x/top/bottom/center_y）
+- `POST /shape/distribute`
+  - 均匀分布一组图形（horizontal/vertical）
 - `POST /shape/connect`
   - 连线（支持常见 2D 形状，已加 1D fallback）
 

@@ -181,6 +181,14 @@ class VisioAdapter:
             line_weight_pt,
         )
 
+    def align_shapes(self, session_id: str, shape_ids: list[int], mode: str) -> Dict[str, Any]:
+        self._assert_session(session_id)
+        return self._run_sync(self._align_shapes_impl, session_id, shape_ids, mode)
+
+    def distribute_shapes(self, session_id: str, shape_ids: list[int], axis: str) -> Dict[str, Any]:
+        self._assert_session(session_id)
+        return self._run_sync(self._distribute_shapes_impl, session_id, shape_ids, axis)
+
     def connect_shapes(self, session_id: str, from_shape_id: int, to_shape_id: int, page_name: Optional[str]) -> Dict[str, Any]:
         self._assert_session(session_id)
         return self._run_sync(self._connect_shapes_impl, session_id, from_shape_id, to_shape_id, page_name)
@@ -391,6 +399,84 @@ class VisioAdapter:
             shp.CellsU("LineWeight").FormulaU = f"{float(line_weight_pt)} pt"
 
         return {"shape_id": shape_id, "updated": True}
+
+    def _align_shapes_impl(self, session_id: str, shape_ids: list[int], mode: str) -> Dict[str, Any]:
+        if len(shape_ids) < 2:
+            raise VisioError("align requires at least 2 shapes")
+
+        app = self._get_app()
+        doc = self._get_doc(app, session_id)
+        page = self._get_page(doc, None)
+        shapes = [page.Shapes.ItemFromID(int(sid)) for sid in shape_ids]
+        anchor = shapes[0]
+
+        def edge(shp, which: str) -> float:
+            px = shp.CellsU("PinX").ResultIU
+            py = shp.CellsU("PinY").ResultIU
+            w = shp.CellsU("Width").ResultIU
+            h = shp.CellsU("Height").ResultIU
+            if which == "left":
+                return px - w / 2
+            if which == "right":
+                return px + w / 2
+            if which == "top":
+                return py + h / 2
+            if which == "bottom":
+                return py - h / 2
+            if which == "center_x":
+                return px
+            if which == "center_y":
+                return py
+            raise VisioError(f"unsupported align mode: {which}")
+
+        ref = edge(anchor, mode)
+        for shp in shapes[1:]:
+            w = shp.CellsU("Width").ResultIU
+            h = shp.CellsU("Height").ResultIU
+            if mode == "left":
+                shp.CellsU("PinX").ResultIU = ref + w / 2
+            elif mode == "right":
+                shp.CellsU("PinX").ResultIU = ref - w / 2
+            elif mode == "center_x":
+                shp.CellsU("PinX").ResultIU = ref
+            elif mode == "top":
+                shp.CellsU("PinY").ResultIU = ref - h / 2
+            elif mode == "bottom":
+                shp.CellsU("PinY").ResultIU = ref + h / 2
+            elif mode == "center_y":
+                shp.CellsU("PinY").ResultIU = ref
+            else:
+                raise VisioError(f"unsupported align mode: {mode}")
+
+        return {"aligned": len(shape_ids), "mode": mode}
+
+    def _distribute_shapes_impl(self, session_id: str, shape_ids: list[int], axis: str) -> Dict[str, Any]:
+        if len(shape_ids) < 3:
+            raise VisioError("distribute requires at least 3 shapes")
+
+        app = self._get_app()
+        doc = self._get_doc(app, session_id)
+        page = self._get_page(doc, None)
+        shapes = [page.Shapes.ItemFromID(int(sid)) for sid in shape_ids]
+
+        if axis == "horizontal":
+            shapes.sort(key=lambda s: s.CellsU("PinX").ResultIU)
+            start = shapes[0].CellsU("PinX").ResultIU
+            end = shapes[-1].CellsU("PinX").ResultIU
+            gap = (end - start) / (len(shapes) - 1)
+            for i, shp in enumerate(shapes[1:-1], start=1):
+                shp.CellsU("PinX").ResultIU = start + i * gap
+        elif axis == "vertical":
+            shapes.sort(key=lambda s: s.CellsU("PinY").ResultIU)
+            start = shapes[0].CellsU("PinY").ResultIU
+            end = shapes[-1].CellsU("PinY").ResultIU
+            gap = (end - start) / (len(shapes) - 1)
+            for i, shp in enumerate(shapes[1:-1], start=1):
+                shp.CellsU("PinY").ResultIU = start + i * gap
+        else:
+            raise VisioError("axis must be horizontal or vertical")
+
+        return {"distributed": len(shape_ids), "axis": axis}
 
     def _connect_shapes_impl(self, session_id: str, from_shape_id: int, to_shape_id: int, page_name: Optional[str]) -> Dict[str, Any]:
         app = self._get_app()
