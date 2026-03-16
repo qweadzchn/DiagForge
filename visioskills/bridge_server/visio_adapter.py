@@ -365,8 +365,16 @@ class VisioAdapter:
         if save_path:
             doc.SaveAs(save_path)
             return {"saved": True, "path": save_path}
-        doc.Save()
-        return {"saved": True, "path": str(getattr(doc, "Path", ""))}
+
+        try:
+            doc.Save()
+            return {"saved": True, "path": str(getattr(doc, "Path", ""))}
+        except Exception:
+            # Unsaved new doc: fallback to user's Documents
+            home = os.path.expanduser("~")
+            fallback = os.path.join(home, "Documents", f"png2vsdx_autosave_{session_id[:8]}.vsdx")
+            doc.SaveAs(fallback)
+            return {"saved": True, "path": fallback}
 
     def _close_session_impl(self, session_id: str, save: bool) -> Dict[str, Any]:
         app = self._get_app()
