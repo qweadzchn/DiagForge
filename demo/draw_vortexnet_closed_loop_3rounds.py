@@ -308,10 +308,7 @@ def draw_round(round_idx: int) -> dict[str, Any]:
 
     connect("weights", "optimizer", rgb=(116, 160, 86), lw=1.3)
 
-    # ---- save + export + download ----
-    vsdx_path = fr"D:\work\png2vsdx\demo\vortexnet_closedloop_r{round_idx}.vsdx"
-    save = post("/session/save", {"session_id": session_id, "save_path": vsdx_path})
-
+    # ---- export first, then save ----
     export_name = f"vortexnet_closedloop_r{round_idx}.png"
     export = post(
         "/session/export_png",
@@ -325,7 +322,15 @@ def draw_round(round_idx: int) -> dict[str, Any]:
     local_png = LOCAL_OUT / export_name
     download_artifact(ticket, local_png)
 
-    return {
+    vsdx_path = fr"D:\work\png2vsdx\demo\vortexnet_closedloop_r{round_idx}_{int(time.time())}.vsdx"
+    save: dict[str, Any] | None = None
+    save_error: str | None = None
+    try:
+        save = post("/session/save", {"session_id": session_id, "save_path": vsdx_path})
+    except Exception as e:
+        save_error = str(e)
+
+    out = {
         "round": round_idx,
         "session_id": session_id,
         "shape_count": len(created),
@@ -334,6 +339,9 @@ def draw_round(round_idx: int) -> dict[str, Any]:
         "export": export,
         "local_png": str(local_png),
     }
+    if save_error:
+        out["save_error"] = save_error
+    return out
 
 
 def main() -> None:
@@ -344,7 +352,10 @@ def main() -> None:
     }
 
     for r in (1, 2, 3):
-        out["rounds"].append(draw_round(r))
+        try:
+            out["rounds"].append(draw_round(r))
+        except Exception as e:
+            out["rounds"].append({"round": r, "error": str(e)})
 
     print(json.dumps(out, ensure_ascii=False, indent=2))
 
