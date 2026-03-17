@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import os
+import re
 import threading
+import time
+import uuid
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 try:
@@ -17,6 +21,9 @@ except ImportError:  # allows `uvicorn app:app` from this directory
 APP_NAME = "png2vsdx-visio-bridge"
 APP_VERSION = "0.1.0"
 TOKEN_ENV = "VISIO_BRIDGE_TOKEN"
+EXPORT_DIR_ENV = "VISIO_BRIDGE_EXPORT_DIR"
+DEFAULT_EXPORT_DIR = r"D:\work\png2vsdx\exports"
+EXPORT_TICKET_TTL_S = 300
 
 
 class HealthResponse(BaseModel):
@@ -126,6 +133,13 @@ class CloseSessionRequest(BaseModel):
     save: bool = True
 
 
+class ExportPagePngRequest(BaseModel):
+    request_id: str
+    session_id: str
+    page_name: Optional[str] = None
+    file_name: Optional[str] = None
+
+
 class SelectShapeRequest(BaseModel):
     request_id: str
     session_id: str
@@ -140,6 +154,15 @@ class GenericOk(BaseModel):
 @dataclass
 class RequestCacheEntry:
     payload: Dict[str, Any]
+
+
+@dataclass
+class ArtifactTicketEntry:
+    file_path: str
+    file_name: str
+    media_type: str
+    expires_at: float
+    consumed: bool = False
 
 
 class IdempotencyStore:
@@ -157,9 +180,51 @@ class IdempotencyStore:
             self._cache[request_id] = RequestCacheEntry(payload=payload)
 
 
+class ArtifactTicketStore:
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self._tickets: Dict[str, ArtifactTicketEntry] = {}
+
+    def _purge_expired_locked(self) -> None:
+        now = time.time()
+        expired = [k for k, v in self._tickets.items() if v.expires_at <= now]
+        for k in expired:
+            self._tickets.pop(k, None)
+
+    def issue(self, *, file_path: str, file_name: str, media_type: str, ttl_s: int = EXPORT_TICKET_TTL_S) -> Dict[str, Any]:
+        ticket = str(uuid.uuid4())
+        expires_at = time.time() + max(1, int(ttl_s))
+        entry = ArtifactTicketEntry(
+            file_path=file_path,
+            file_name=file_name,
+            media_type=media_type,
+            expires_at=expires_at,
+            consumed=False,
+        )
+        with self._lock:
+            self._purge_expired_locked()
+            self._tickets[ticket] = entry
+
+        return {
+            "ticket": ticket,
+            "expires_at_epoch": int(expires_at),
+            "expires_in_s": int(expires_at - time.time()),
+        }
+
+    def consume(self, ticket: str) -> Optional[ArtifactTicketEntry]:
+        with self._lock:
+            self._purge_expired_locked()
+            entry = self._tickets.get(ticket)
+            if not entry or entry.consumed:
+                return None
+            entry.consumed = True
+            return entry
+
+
 app = FastAPI(title=APP_NAME, version=APP_VERSION)
 adapter = VisioAdapter()
 idempotency = IdempotencyStore()
+artifact_tickets = ArtifactTicketStore()
 
 
 def _check_auth(authorization: Optional[str]) -> None:
@@ -180,6 +245,38 @@ def _idempotent(request_id: str, payload_builder) -> Dict[str, Any]:
     payload = payload_builder()
     idempotency.put(request_id, payload)
     return payload
+
+
+def _export_dir() -> str:
+    base = os.environ.get(EXPORT_DIR_ENV, DEFAULT_EXPORT_DIR)
+    return os.path.abspath(base)
+
+
+def _normalize_export_file_name(session_id: str, request_id: str, file_name: Optional[str]) -> str:
+    if not file_name:
+        return f"{session_id[:8]}_{request_id[:8]}.png"
+
+    if os.path.basename(file_name) != file_name:
+        raise HTTPException(status_code=400, detail="file_name must not include path separators")
+
+    if not re.fullmatch(r"[A-Za-z0-9._-]{1,128}", file_name):
+        raise HTTPException(status_code=400, detail="file_name contains unsupported characters")
+
+    if not file_name.lower().endswith(".png"):
+        raise HTTPException(status_code=400, detail="Only .png export is supported")
+
+    return file_name
+
+
+def _safe_export_path(file_name: str) -> str:
+    out_dir = _export_dir()
+    os.makedirs(out_dir, exist_ok=True)
+
+    full = os.path.abspath(os.path.join(out_dir, file_name))
+    if os.path.commonpath([full, out_dir]) != out_dir:
+        raise HTTPException(status_code=400, detail="Resolved export path escapes export directory")
+
+    return full
 
 
 @app.get("/health", response_model=HealthResponse)
@@ -369,3 +466,47 @@ def close_session(req: CloseSessionRequest, authorization: Optional[str] = Heade
         return {"ok": True, "data": data}
 
     return GenericOk(**_idempotent(req.request_id, op))
+
+
+@app.post("/session/export_png", response_model=GenericOk)
+def export_session_png(req: ExportPagePngRequest, authorization: Optional[str] = Header(default=None)) -> GenericOk:
+    _check_auth(authorization)
+
+    def op() -> Dict[str, Any]:
+        file_name = _normalize_export_file_name(req.session_id, req.request_id, req.file_name)
+        export_path = _safe_export_path(file_name)
+        exported = adapter.export_page_png(req.session_id, req.page_name, export_path)
+
+        ticket = artifact_tickets.issue(
+            file_path=export_path,
+            file_name=file_name,
+            media_type="image/png",
+            ttl_s=EXPORT_TICKET_TTL_S,
+        )
+
+        return {
+            "ok": True,
+            "data": {
+                **exported,
+                "download": {
+                    **ticket,
+                    "url": f"/artifact/download/{ticket['ticket']}",
+                    "one_time": True,
+                },
+            },
+        }
+
+    return GenericOk(**_idempotent(req.request_id, op))
+
+
+@app.get("/artifact/download/{ticket}")
+def download_artifact(ticket: str, authorization: Optional[str] = Header(default=None)):
+    _check_auth(authorization)
+    entry = artifact_tickets.consume(ticket)
+    if entry is None:
+        raise HTTPException(status_code=404, detail="Invalid/expired/consumed ticket")
+
+    if not os.path.isfile(entry.file_path):
+        raise HTTPException(status_code=404, detail="Artifact file no longer exists")
+
+    return FileResponse(path=entry.file_path, media_type=entry.media_type, filename=entry.file_name)

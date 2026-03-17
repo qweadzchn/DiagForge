@@ -204,6 +204,10 @@ class VisioAdapter:
             self._sessions.pop(session_id, None)
         return data
 
+    def export_page_png(self, session_id: str, page_name: Optional[str], save_path: str) -> Dict[str, Any]:
+        self._assert_session(session_id)
+        return self._run_sync(self._export_page_png_impl, session_id, page_name, save_path)
+
     # ---------- worker helpers ----------
     def _run_sync(self, fn, *args, timeout: float = 60.0, **kwargs):
         fut = self._worker.submit(fn, *args, **kwargs)
@@ -509,6 +513,22 @@ class VisioAdapter:
                 continue
 
         raise VisioError(f"Cannot glue connector endpoint {endpoint_cell} to target shape {target_shape.ID}")
+
+    def _export_page_png_impl(self, session_id: str, page_name: Optional[str], save_path: str) -> Dict[str, Any]:
+        app = self._get_app()
+        doc = self._get_doc(app, session_id)
+        page = self._get_page(doc, page_name)
+
+        out_dir = os.path.dirname(save_path)
+        if out_dir:
+            os.makedirs(out_dir, exist_ok=True)
+
+        page.Export(save_path)
+        return {
+            "exported": True,
+            "path": save_path,
+            "page": str(page.NameU),
+        }
 
     def _save_session_impl(self, session_id: str, save_path: Optional[str]) -> Dict[str, Any]:
         app = self._get_app()

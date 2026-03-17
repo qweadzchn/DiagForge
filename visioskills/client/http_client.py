@@ -178,3 +178,27 @@ class VisioBridgeClient:
 
     def close_session(self, session_id: str, save: bool = True) -> Dict[str, Any]:
         return self._post("/session/close", {"session_id": session_id, "save": save})
+
+    def export_session_png(
+        self,
+        session_id: str,
+        page_name: Optional[str] = None,
+        file_name: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        return self._post(
+            "/session/export_png",
+            {
+                "session_id": session_id,
+                "page_name": page_name,
+                "file_name": file_name,
+            },
+        )
+
+    def download_artifact(self, ticket: str) -> bytes:
+        r = requests.get(
+            f"{self.config.base_url}/artifact/download/{ticket}",
+            headers=self._headers(),
+            timeout=self.config.timeout_s,
+        )
+        r.raise_for_status()
+        return r.content

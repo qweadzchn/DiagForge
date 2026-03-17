@@ -27,7 +27,12 @@ pip install -r requirements.txt
 $env:VISIO_BRIDGE_TOKEN="replace-with-a-long-random-token"
 ```
 
-### 5. 启动 Bridge
+### 5.（可选）设置导出目录（用于闭环截图）
+```powershell
+$env:VISIO_BRIDGE_EXPORT_DIR="D:\work\png2vsdx\exports"
+```
+
+### 6. 启动 Bridge
 ```powershell
 uvicorn app:app --host 0.0.0.0 --port 18761
 ```
@@ -68,6 +73,8 @@ session 失效，重新 `session/create`。
 - 连线：`/shape/connect`
 - 文本与字体颜色：`/shape/set_text_style`
 - 线条/填充颜色与线宽：`/shape/set_colors`
+- 导出当前页 PNG：`/session/export_png`
+- 受限一次性下载：`/artifact/download/{ticket}`
 
 ---
 

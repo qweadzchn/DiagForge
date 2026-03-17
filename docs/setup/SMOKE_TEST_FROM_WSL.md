@@ -59,4 +59,19 @@ curl -s -X POST "$HOST/shape/connect" \
 curl -s -X POST "$HOST/session/save" \
   -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   -d "{\"request_id\":\"req-save-1\",\"session_id\":\"$SESSION_ID\"}"
+
+# 导出当前页 PNG（闭环预览）
+EXPORT_JSON=$(curl -s -X POST "$HOST/session/export_png" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d "{\"request_id\":\"req-export-1\",\"session_id\":\"$SESSION_ID\",\"file_name\":\"smoke_preview.png\"}")
+
+echo "$EXPORT_JSON"
+TICKET=$(echo "$EXPORT_JSON" | sed -n 's/.*"ticket":"\([^"]*\)".*/\1/p')
+
+# 一次性下载（需带 token）
+curl -s -L "$HOST/artifact/download/$TICKET" \
+  -H "Authorization: Bearer $TOKEN" \
+  -o ./smoke_preview.png
 ```
+
+> `ticket` 是一次性短时效凭证（默认 5 分钟）。下载后会失效。
