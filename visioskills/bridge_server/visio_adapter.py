@@ -519,16 +519,52 @@ class VisioAdapter:
         doc = self._get_doc(app, session_id)
         page = self._get_page(doc, page_name)
 
-        out_dir = os.path.dirname(save_path)
+        normalized = os.path.normpath(save_path)
+        out_dir = os.path.dirname(normalized)
         if out_dir:
             os.makedirs(out_dir, exist_ok=True)
 
-        page.Export(save_path)
-        return {
-            "exported": True,
-            "path": save_path,
-            "page": str(page.NameU),
-        }
+        errors: list[str] = []
+
+        # Try explicit target page first.
+        try:
+            page.Export(normalized)
+            return {
+                "exported": True,
+                "path": normalized,
+                "page": str(page.NameU),
+                "method": "page.Export",
+            }
+        except Exception as e:
+            errors.append(f"page.Export failed: {e}")
+
+        # Fallback to active page if available.
+        try:
+            active_page = app.ActivePage
+            active_page.Export(normalized)
+            return {
+                "exported": True,
+                "path": normalized,
+                "page": str(getattr(active_page, "NameU", "ActivePage")),
+                "method": "app.ActivePage.Export",
+            }
+        except Exception as e:
+            errors.append(f"app.ActivePage.Export failed: {e}")
+
+        # Final fallback via active window page.
+        try:
+            active_window_page = app.ActiveWindow.Page
+            active_window_page.Export(normalized)
+            return {
+                "exported": True,
+                "path": normalized,
+                "page": str(getattr(active_window_page, "NameU", "ActiveWindow.Page")),
+                "method": "app.ActiveWindow.Page.Export",
+            }
+        except Exception as e:
+            errors.append(f"app.ActiveWindow.Page.Export failed: {e}")
+
+        raise VisioError("PNG export failed; " + " | ".join(errors))
 
     def _save_session_impl(self, session_id: str, save_path: Optional[str]) -> Dict[str, Any]:
         app = self._get_app()

@@ -496,7 +496,10 @@ def export_session_png(req: ExportPagePngRequest, authorization: Optional[str] =
             },
         }
 
-    return GenericOk(**_idempotent(req.request_id, op))
+    try:
+        return GenericOk(**_idempotent(req.request_id, op))
+    except VisioError as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e
 
 
 @app.get("/artifact/download/{ticket}")
