@@ -32,11 +32,11 @@
 - `docs/research/01_OpenSource_Components.md`
   - 已筛选 MCP SDK、Visio 相关样例、WSL 网络文档、图 DSL 生态
   - 结论：`pywin32 + Windows Bridge + MCP Python SDK` 是当前最现实主线
-- `demo/00_DECISIONS_TO_CONFIRM.md`
+- `docs/architecture/00_DECISIONS_TO_CONFIRM.md`
   - 已给出需拍板决策清单（协议、鉴权、幂等、熔断、MVP 范围）
-- `demo/01_WSL_WINDOWS_VISIO_CONNECTIVITY_PLAN.md`
+- `docs/architecture/01_WSL_WINDOWS_VISIO_CONNECTIVITY_PLAN.md`
   - 给出最小链路验证路线与验收指标（100 次稳定性验证等）
-- `demo/02_SYSTEM_ARCHITECTURE_FULL_DESIGN.md`
+- `docs/architecture/02_SYSTEM_ARCHITECTURE_FULL_DESIGN.md`
   - 给出分层架构（Intent/Planner/Compiler/Runtime/Bridge/COM）
 
 ### 1.3 仓库与协作状态
@@ -61,7 +61,7 @@
 ## 3) 仍需你拍板 / 仍需补充调研的关键点
 
 ### 3.1 需要你拍板（高优先级）
-对应文档：`demo/00_DECISIONS_TO_CONFIRM.md`
+对应文档：`docs/architecture/00_DECISIONS_TO_CONFIRM.md`
 
 A. Bridge 与协议
 - [ ] Windows 常驻 Bridge 是否作为唯一主链路（建议：是）
@@ -178,7 +178,7 @@ C. MVP 范围
 
 ## 6) 推荐下一步（现在就可执行）
 
-1. 你先对 `demo/00_DECISIONS_TO_CONFIRM.md` 逐项勾选（或我给你出一版“建议默认值”供你一次性确认）。
+1. 你先对 `docs/architecture/00_DECISIONS_TO_CONFIRM.md` 逐项勾选（或我给你出一版“建议默认值”供你一次性确认）。
 2. 我按你确认结果，补一份 `docs/specs/` 的**v1 接口与错误码文档**（仍不写业务代码）。
 3. 你回复“方案通过，开始开发”后，再进入 Phase 1 实现。
 

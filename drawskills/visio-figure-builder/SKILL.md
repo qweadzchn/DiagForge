@@ -1,6 +1,6 @@
 ---
 name: visio-figure-builder
-description: Build publication-style figures in Microsoft Visio through the png2vsdx bridge. Use when asked to draw/reproduce/edit diagrams in Visio, especially for research papers. Always remind the user to start the Windows Visio bridge service before execution, then compile high-level drawing intents into visioskills atomic calls.
+description: Build publication-style figures in Microsoft Visio through the png2vsdx bridge. Use when asked to draw, reproduce, polish, or iteratively improve diagrams in Visio, especially research figures. Always verify the bridge runtime first, then compile high-level drawing intent into visioskills atomic calls, export PNG previews, and feed reusable lessons back into learningskills when a drawing iteration reveals a repeatable problem.
 ---
 
 # Visio Figure Builder
@@ -13,6 +13,8 @@ description: Build publication-style figures in Microsoft Visio through the png2
    - `GET /health`
    - `POST /ping_visio`
 3. Stop and ask user to fix runtime if either check fails.
+
+Also read `../../AGENT_GUIDE.md` if you need the full repository workflow.
 
 ## Default style preset (research baseline)
 
@@ -50,8 +52,11 @@ description: Build publication-style figures in Microsoft Visio through the png2
    - `shape/set_text_block` (if label needs positioning)
    - `shape/set_colors`
    - `shape/connect`
+   - `session/export_png`
    - `session/save`
-3. Report created shape IDs and save path.
+3. Inspect the exported PNG and note obvious layout/style issues.
+4. If the issue is reusable, write it back through `../../learningskills/visio-iteration-journal/SKILL.md`.
+5. Report created shape IDs, export path, and save path.
 
 ## Atomic operation mapping
 
@@ -68,6 +73,17 @@ description: Build publication-style figures in Microsoft Visio through the png2
 - If still failing, return exact failed step and payload summary.
 - Prefer explicit `save_path` in `/session/save` to avoid unnamed document save edge cases.
 
+## Closed-loop default
+
+For non-trivial figures, do at least one preview loop:
+
+1. Build structural skeleton
+2. Align/distribute
+3. Connect main paths
+4. Style
+5. Export PNG
+6. Polish spacing, typography, or clutter
+
 ## Reproduction workflow (when user provides an example figure)
 
 1. Extract graph topology first (nodes + arrows).
@@ -82,3 +98,5 @@ description: Build publication-style figures in Microsoft Visio through the png2
   - `references/research-figure-guidelines.md`
 - For layout tuning and iteration lessons, read:
   - `references/layout-iteration-notes.md`
+- For generalized postmortem capture, read:
+  - `../../learningskills/templates/lesson-template.md`

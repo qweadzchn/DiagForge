@@ -1,47 +1,77 @@
 # png2vsdx
 
-阶段一目标：打通 `WSL Agent -> Windows Bridge -> Visio COM` 链路，并先实现基础可用操作能力。
+让 agent 像人一样使用 Microsoft Visio 画图的实验性执行系统。
 
-## 当前已落地内容
+当前仓库的重点不是“单次画一张图”，而是把这件事拆成可以持续演进的 4 层：
 
-- `visioskills/bridge_server/`
-  - FastAPI Bridge（Windows 运行）
-  - 单线程 COM 执行队列（STA）
-  - 基础接口：创建会话、加图形、选中、定位/调大小、连线、字体/颜色、保存、关闭
-  - Bearer Token 鉴权（可选）
-  - request_id 幂等缓存（基础版）
+1. `visioskills`: 教 agent 稳定操作 Visio。
+2. `drawskills`: 教 agent 用这些操作把图画得更好。
+3. `learningskills`: 教 agent 把一次次画图中踩过的坑沉淀成经验。
+4. `AGENT_GUIDE.md`: 教 agent 什么时候用哪一层，以及如何形成闭环。
 
-- `visioskills/client/`
-  - WSL 侧 Python HTTP 客户端
+## Why This Repo Exists
 
-- `drawskills/schemas/`
-  - DrawDSL JSON Schema（v0.1）
+现有方案大多停在以下其中一类：
 
-- `drawskills/examples/`
-  - `two_boxes_arrow.yaml` 示例（两个方框 + 箭头）
+- 只能“生成图”，不能长期多轮编辑
+- 只能“操作软件”，没有结构化绘图能力
+- 能跑 demo，但没有回放、复盘、经验沉淀
 
-- `docs/setup/`
-  - Windows 部署说明
-  - WSL 烟雾测试脚本
+`png2vsdx` 想做的是另一条路线：
 
-## 目录
+- `WSL/Agent -> Windows Bridge -> Visio COM`
+- 显式 `session_id / shape_id / request_id`
+- 结构化 DrawDSL，而不是直接自然语言裸奔到 COM
+- 导出 PNG 做闭环预览
+- 逐步补上“看图评估 -> 复盘 -> 沉淀”的能力
+
+## Current Status
+
+已经落地：
+
+- Windows 侧 FastAPI bridge
+- 单线程 COM 执行队列（STA）
+- 基础原子操作：创建会话、加图形、定位、样式、连线、保存、关闭、导出 PNG
+- WSL 侧 Python HTTP 客户端
+- DrawDSL schema v0.1
+- 研究型绘图 skill 雏形
+- 三轮 closed-loop 绘图 demo
+
+还在补的关键能力：
+
+- 当前画布的读回和检查能力
+- DrawDSL -> ExecIR 的编译与校验层
+- learningskills 经验沉淀机制
+- 可回放的回归基准图集
+
+## Start Here
+
+- 想看总入口：`AGENT_GUIDE.md`
+- 想看项目结构：`docs/PROJECT_STRUCTURE.md`
+- 想部署 bridge：`docs/setup/WINDOWS_BRIDGE_DEPLOY.md`
+- 想跑最小闭环：`docs/setup/SMOKE_TEST_FROM_WSL.md`
+- 想看系统设计：`docs/architecture/`
+
+## Repository Layout
 
 ```text
-visioskills/
-  bridge_server/
-  client/
-
-drawskills/
-  schemas/
-  examples/
-
-docs/
-  research/
-  setup/
+visioskills/     Atomic Visio operations, bridge server, operator skill
+drawskills/      Drawing DSL, figure-building skill, layout/style references
+learningskills/  Reusable lessons distilled from drawing iterations
+demo/            Example scripts only; generated binaries are gitignored
+docs/            Setup, research, architecture, project structure
 ```
 
-## 下一步（需要 Windows 环境）
+## Quick Workflow
 
-1. 在 Windows 启动 bridge（见 `docs/setup/WINDOWS_BRIDGE_DEPLOY.md`）
-2. 从 WSL 跑连通 + 画图烟雾测试（见 `docs/setup/SMOKE_TEST_FROM_WSL.md`）
-3. 根据实测日志修正：错误码、重试策略、会话恢复
+1. 在 Windows 启动 bridge。
+2. 用 `docs/setup/SMOKE_TEST_FROM_WSL.md` 验证 `health -> ping_visio -> create -> add -> export_png`。
+3. 让 agent 先读 `AGENT_GUIDE.md`，再根据任务进入 `visioskills`、`drawskills`、`learningskills`。
+4. 每次大改后导出 PNG 做闭环检查，并把可复用经验沉淀到 `learningskills/lessons/`。
+
+## Near-Term Roadmap
+
+- 补读回能力：列 shape、读 geometry/style、页面边界
+- 补编译层：DrawDSL -> ExecIR -> visioskills
+- 建立学习闭环：问题归因、修复策略、经验模板
+- 建立可展示的 benchmark gallery 和回归流程
