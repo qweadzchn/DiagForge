@@ -1,5 +1,7 @@
 # DiagForge
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 Forge human-editable diagrams through an agentic abstraction layer on top of professional diagram software.
 
 DiagForge is not a one-shot "PNG to VSDX" script.
