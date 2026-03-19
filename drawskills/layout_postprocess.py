@@ -17,6 +17,10 @@ def is_label(node: dict[str, Any]) -> bool:
     return str(node.get("shape", "")).lower() == "label"
 
 
+def is_background(node: dict[str, Any]) -> bool:
+    return str(node.get("role", "")).lower() == "background"
+
+
 def padding_x(node: dict[str, Any]) -> float:
     value = node.get("padding_x")
     return float(value) if value is not None else 0.10
@@ -401,7 +405,7 @@ def _separate_layout_groups(nodes: list[dict[str, Any]], layout: dict[str, Any],
 def _reflow_rows_and_columns(nodes: list[dict[str, Any]], constraints: dict[str, Any]) -> None:
     nodes_by_region: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for node in nodes:
-        if is_container(node) or is_title(node):
+        if is_container(node) or is_title(node) or is_background(node):
             continue
         region_id = str(node.get("region_id") or "").strip()
         if not region_id:
@@ -426,7 +430,7 @@ def _separate_regions(nodes: list[dict[str, Any]], constraints: dict[str, Any]) 
         if not region_id:
             continue
         groups[region_id].append(node)
-        if not is_container(node):
+        if not is_container(node) and not is_background(node):
             bounds_basis[region_id].append(node)
 
     region_ids = list(bounds_basis.keys())
@@ -475,7 +479,7 @@ def _separate_regions(nodes: list[dict[str, Any]], constraints: dict[str, Any]) 
 def _resolve_residual_overlaps(nodes: list[dict[str, Any]], constraints: dict[str, Any]) -> None:
     min_gap_x = float(constraints.get("min_gap_x") or 0.18)
     min_gap_y = float(constraints.get("min_gap_y") or 0.18)
-    candidates = [node for node in nodes if not is_container(node) and not is_title(node)]
+    candidates = [node for node in nodes if not is_container(node) and not is_title(node) and not is_background(node)]
 
     for _ in range(8):
         moved = False

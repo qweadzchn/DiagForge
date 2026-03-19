@@ -127,8 +127,14 @@ def _default_edge_style(
 ) -> dict[str, Any]:
     semantic = str(edge.get("semantic", "")).lower()
     style = dict(edge.get("style", {}))
-    emphasized = {"primary_path", "detect_link", "emphasized_downlink", "training_loss", "io_cross_stage"}
-    default_weight = 1.7 if semantic in emphasized else 1.45
+    colored_emphasis = {"detect_link", "emphasized_downlink", "training_loss", "io_cross_stage"}
+    reference_links = {"detail_panel_link", "detail_skip", "external_example", "io_external"}
+    if semantic in colored_emphasis:
+        default_weight = 1.35
+    elif semantic in reference_links:
+        default_weight = 1.0
+    else:
+        default_weight = 1.15
     src = nodes_by_id[str(edge["from"])]
     dst = nodes_by_id[str(edge["to"])]
     dx = float(dst["x"]) - float(src["x"])
@@ -138,18 +144,21 @@ def _default_edge_style(
         style["line_weight_pt"] = default_weight
     else:
         style["line_weight_pt"] = max(float(style["line_weight_pt"]), default_weight)
-    if "end_arrow" not in style:
-        style["end_arrow"] = 13
-    if "end_arrow_size" not in style:
-        style["end_arrow_size"] = 2
 
-    if semantic in {"external_example", "io_external"} and "line_pattern" not in style:
+    if semantic in {"detail_panel_link", "detail_skip"}:
+        style.setdefault("end_arrow", 0)
+        style.setdefault("end_arrow_size", 0)
+    else:
+        style.setdefault("end_arrow", 13)
+        style.setdefault("end_arrow_size", 2)
+
+    if semantic in reference_links and "line_pattern" not in style:
         style["line_pattern"] = 2
-    if semantic in emphasized and "line_rgb" not in style:
+    if semantic in colored_emphasis and "line_rgb" not in style:
         style["line_rgb"] = [243, 88, 24]
-    if semantic in {"external_example", "io_external"} and "line_rgb" not in style:
-        style["line_rgb"] = [30, 80, 230]
-    if "line_rgb" not in style:
+    elif semantic in reference_links and "line_rgb" not in style:
+        style["line_rgb"] = [130, 130, 130]
+    elif "line_rgb" not in style:
         style["line_rgb"] = [35, 35, 35]
 
     route_intent = _resolve_route_intent(edge, nodes_by_id, from_pin, to_pin)
@@ -315,6 +324,9 @@ def _assess_edge_geometry(
         findings.append(f"connector_height_too_large:{height:.3f}")
     if expected_axis == "vertical" and width > 0.35:
         findings.append(f"connector_width_too_large:{width:.3f}")
+    semantic = str(edge.get("semantic", "")).lower()
+    if semantic in {"detail_panel_link", "detail_skip"} and max(width, height) > 3.0:
+        findings.append(f"reference_link_span_too_large:{width:.3f}x{height:.3f}")
     return findings
 
 
