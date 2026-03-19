@@ -18,6 +18,7 @@ from drawskills.layout_postprocess import (
     estimate_text_box as _layout_estimate_text_box,
     expected_text_angle_deg,
     font_size_for_node as _layout_font_size_for_node,
+    is_background as _layout_is_background,
     infer_container_memberships,
     padding_x as _layout_padding_x,
     padding_y as _layout_padding_y,
@@ -194,7 +195,11 @@ def _bounds_overlap(a: tuple[float, float, float, float], b: tuple[float, float,
 
 def _detect_node_overlaps(nodes: list[dict[str, Any]], tolerance: float = 0.03) -> list[dict[str, Any]]:
     findings: list[dict[str, Any]] = []
-    candidates = [node for node in nodes if str(node.get("shape", "")).lower() != "container"]
+    candidates = [
+        node
+        for node in nodes
+        if str(node.get("shape", "")).lower() != "container" and not _layout_is_background(node)
+    ]
     for index, left in enumerate(candidates):
         left_bounds = _rect_bounds(left)
         for right in candidates[index + 1 :]:
