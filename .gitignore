@@ -5,3 +5,10 @@ exports/
 demo/exports/
 demo/*.vsdx
 artifacts/
+InputPNG/*
+!InputPNG/.gitkeep
+OutputPreview/*
+!OutputPreview/.gitkeep
+OutputVSDX/*
+!OutputVSDX/.gitkeep
+Setup/draw-job.local.json

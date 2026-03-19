@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://png2vsdx.local/schemas/draw-job.schema.json",
+  "title": "Draw Job Config",
+  "type": "object",
+  "required": ["job_name", "task", "paths", "bridge", "execution"],
+  "properties": {
+    "job_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task": {
+      "type": "object",
+      "required": ["input_png", "final_vsdx_name"],
+      "properties": {
+        "input_png": {
+          "type": "string",
+          "description": "File name under InputPNG/"
+        },
+        "final_vsdx_name": {
+          "type": "string",
+          "description": "Final VSDX file name under OutputVSDX/"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "required": ["input_dir", "preview_dir", "final_vsdx_dir"],
+      "properties": {
+        "input_dir": { "type": "string" },
+        "preview_dir": { "type": "string" },
+        "final_vsdx_dir": { "type": "string" }
+      }
+    },
+    "bridge": {
+      "type": "object",
+      "required": ["base_url", "token_env"],
+      "properties": {
+        "base_url": {
+          "type": "string"
+        },
+        "token_env": {
+          "type": "string"
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": [
+        "max_rounds",
+        "save_intermediate_vsdx",
+        "export_preview_each_round",
+        "clear_session_after_round",
+        "record_lessons_each_round",
+        "keep_final_vsdx"
+      ],
+      "properties": {
+        "max_rounds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "save_intermediate_vsdx": {
+          "type": "boolean"
+        },
+        "export_preview_each_round": {
+          "type": "boolean"
+        },
+        "clear_session_after_round": {
+          "type": "boolean"
+        },
+        "record_lessons_each_round": {
+          "type": "boolean"
+        },
+        "keep_final_vsdx": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

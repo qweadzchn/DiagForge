@@ -47,6 +47,7 @@
 ## Start Here
 
 - 想看总入口：`AGENT_GUIDE.md`
+- 想按“放图 -> 改配置 -> 开始画”的方式跑任务：`Setup/README.md`
 - 想看项目结构：`docs/PROJECT_STRUCTURE.md`
 - 想部署 bridge：`docs/setup/WINDOWS_BRIDGE_DEPLOY.md`
 - 想跑最小闭环：`docs/setup/SMOKE_TEST_FROM_WSL.md`
@@ -58,6 +59,10 @@
 visioskills/     Atomic Visio operations, bridge server, operator skill
 drawskills/      Drawing DSL, figure-building skill, layout/style references
 learningskills/  Reusable lessons distilled from drawing iterations
+Setup/           Per-job config, runtime checks, operator entrypoint
+InputPNG/        Source figures to reproduce
+OutputPreview/   Per-round preview exports
+OutputVSDX/      Final VSDX outputs
 demo/            Example scripts only; generated binaries are gitignored
 docs/            Setup, research, architecture, project structure
 ```
@@ -65,9 +70,10 @@ docs/            Setup, research, architecture, project structure
 ## Quick Workflow
 
 1. 在 Windows 启动 bridge。
-2. 用 `docs/setup/SMOKE_TEST_FROM_WSL.md` 验证 `health -> ping_visio -> create -> add -> export_png`。
-3. 让 agent 先读 `AGENT_GUIDE.md`，再根据任务进入 `visioskills`、`drawskills`、`learningskills`。
-4. 每次大改后导出 PNG 做闭环检查，并把可复用经验沉淀到 `learningskills/lessons/`。
+2. 把参考图放进 `InputPNG/`，并按 `Setup/README.md` 准备 `Setup/draw-job.local.json`。
+3. 用 `python Setup/run_draw_job.py --config Setup/draw-job.local.json` 做一次任务预检。
+4. 让 agent 先读 `AGENT_GUIDE.md`，再根据任务进入 `visioskills`、`drawskills`、`learningskills`。
+5. 每次大改后导出 PNG 做闭环检查，并把可复用经验沉淀到 `learningskills/lessons/`。
 
 ## Near-Term Roadmap
 

@@ -15,6 +15,7 @@ description: Build publication-style figures in Microsoft Visio through the png2
 3. Stop and ask user to fix runtime if either check fails.
 
 Also read `../../AGENT_GUIDE.md` if you need the full repository workflow.
+If `../../Setup/draw-job.local.json` exists, treat its `execution` block as the source of truth for round limits, preview export, cleanup, and final-output behavior.
 
 ## Default style preset (research baseline)
 

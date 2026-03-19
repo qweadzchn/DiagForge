@@ -27,6 +27,7 @@
 2. `GET /health` 正常
 3. `POST /ping_visio` 正常
 4. token、导出目录、保存路径都明确
+5. 如果存在 `Setup/draw-job.local.json`，把它当作本次任务的执行配置来源
 
 如果 preflight 没过，不进入绘图。
 
@@ -73,6 +74,8 @@
 ## File Map
 
 - `visioskills/OPERATIONS.md`: 当前原子操作能力与缺口
+- `Setup/README.md`: 人类操作流程与任务配置入口
+- `Setup/job.schema.json`: 单次绘图任务的执行设置 schema
 - `docs/PROJECT_STRUCTURE.md`: 仓库结构总览
 - `docs/architecture/`: 设计决策、链路方案、系统分层
 - `demo/README.md`: 示例脚本说明

@@ -51,6 +51,35 @@ Visio 原子执行层。
 - 归因“为什么出问题”
 - 反哺 `visioskills` 和 `drawskills`
 
+### `Setup/`
+
+单次绘图任务的操作入口。
+
+包含：
+
+- `draw-job.template.json`: 任务配置模板
+- `job.schema.json`: 执行设置 schema
+- `run_draw_job.py`: 任务预检脚本
+- `README.md`: 人类操作流程
+
+职责边界：
+
+- 负责“这次怎么跑”
+- 不描述图结构本身
+- 不替代 DrawDSL
+
+### `InputPNG/`
+
+用户放参考图的目录。
+
+### `OutputPreview/`
+
+每轮导出 PNG 预览的目录。
+
+### `OutputVSDX/`
+
+最终 VSDX 结果的目录。
+
 ### `demo/`
 
 示例脚本目录。
@@ -80,7 +109,8 @@ Visio 原子执行层。
 ## 推荐阅读顺序
 
 1. `README.md`
-2. `AGENT_GUIDE.md`
-3. `docs/setup/WINDOWS_BRIDGE_DEPLOY.md`
-4. `docs/setup/SMOKE_TEST_FROM_WSL.md`
-5. `docs/architecture/`
+2. `Setup/README.md`
+3. `AGENT_GUIDE.md`
+4. `docs/setup/WINDOWS_BRIDGE_DEPLOY.md`
+5. `docs/setup/SMOKE_TEST_FROM_WSL.md`
+6. `docs/architecture/`
