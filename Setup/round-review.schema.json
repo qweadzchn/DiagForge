@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diagforge.local/schemas/round-review.schema.json",
+  "title": "Round Review",
+  "type": "object",
+  "required": ["job_name", "round", "status", "owner_layer", "observations", "next_actions"],
+  "properties": {
+    "job_name": { "type": "string" },
+    "round": { "type": "integer", "minimum": 1 },
+    "status": {
+      "type": "string",
+      "enum": ["continue", "satisfied", "blocked"]
+    },
+    "owner_layer": {
+      "type": "string",
+      "enum": ["plannerskills", "drawskills", "visioskills", "learningskills", "mixed"]
+    },
+    "preview_png": {
+      "type": "string"
+    },
+    "observations": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "issues_by_layer": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["layer", "summary"],
+        "properties": {
+          "layer": {
+            "type": "string",
+            "enum": ["plannerskills", "drawskills", "visioskills", "learningskills", "mixed"]
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          },
+          "summary": { "type": "string" }
+        }
+      }
+    },
+    "resolved_from_previous_round": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "missed_by_previous_review": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "preserved_strengths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "review_mechanism_updates": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "lessons_to_capture": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "repo_updates_suggested": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diagforge.local/schemas/analysis.schema.json",
+  "title": "Diagram Analysis",
+  "type": "object",
+  "required": [
+    "job_name",
+    "input_png",
+    "task_goal",
+    "diagram_family",
+    "flow_direction",
+    "regions",
+    "elements",
+    "style_observations",
+    "layout_risks",
+    "open_questions",
+    "recommended_drawskills",
+    "recommended_visioskills",
+    "next_step"
+  ],
+  "properties": {
+    "job_name": { "type": "string" },
+    "input_png": { "type": "string" },
+    "task_goal": { "type": "string" },
+    "diagram_hint": { "type": "string" },
+    "diagram_family": {
+      "type": "string",
+      "enum": ["pipeline", "network_architecture", "flowchart", "mixed_layout", "unknown"]
+    },
+    "flow_direction": {
+      "type": "string",
+      "enum": ["left_to_right", "top_to_bottom", "mixed", "unknown"]
+    },
+    "regions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "role"],
+        "properties": {
+          "id": { "type": "string" },
+          "role": { "type": "string" },
+          "priority": { "type": "integer", "minimum": 1 },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "type": "string" },
+          "text": { "type": "string" },
+          "region_id": { "type": "string" },
+          "importance": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "style_observations": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "layout_risks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "recommended_drawskills": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "recommended_visioskills": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_step": {
+      "type": "string"
+    }
+  }
+}

@@ -1,107 +1,112 @@
-# visioskills 原子操作清单（v0.2）
+# visioskills operations (v0.3)
 
-原则：一个 API 只做一件可验证的小动作，优先保证执行稳定性、可组合性和可回放性。
+Principle: one API should do one verifiable Visio action well. Keep operations atomic, idempotent, and explicit.
 
-## 当前稳定能力
+## Stable capabilities
 
-### 会话类
-
+### Session
 - `POST /session/create`
-  - 创建或打开会话文档
+  - Create or open a Visio document session.
 - `POST /session/save`
-  - 保存会话文档，支持显式 `save_path`
+  - Save the current document, optionally to an explicit `save_path`.
 - `POST /session/close`
-  - 关闭会话
+  - Close the current session.
 
-### 图形类
-
+### Shapes
 - `POST /shape/add`
-  - 添加图形
-  - 当前稳定支持：`Rectangle`、`Circle`、`Line`
+  - Add a shape.
+  - Stable shape types today: `Rectangle`, `Circle`, `Line`.
 - `POST /shape/select`
-  - 选中图形
+  - Select a shape explicitly.
 - `POST /shape/update_geometry`
-  - 更新位置与尺寸
+  - Update position and size.
 - `POST /shape/align`
-  - 对齐多个图形
+  - Align multiple shapes.
 - `POST /shape/distribute`
-  - 分布多个图形
+  - Distribute multiple shapes.
 - `POST /shape/connect`
-  - 添加 connector 并 glue 到两个 shape
+  - Add a connector between two shapes.
+  - Supports optional `from_pin_x`, `from_pin_y`, `to_pin_x`, `to_pin_y` so the agent can choose which side of each shape the connector attaches to.
+- `POST /shape/describe`
+  - Read back geometry, text, font, line weight, arrowheads, connector endpoints, and selected route cells.
 
-### 样式类
+### Page
+- `POST /page/info`
+  - Read the current page size.
+- `POST /page/setup`
+  - Resize the page before drawing so wide figures do not get crushed into the default portrait page.
 
+### Styling
 - `POST /shape/set_text_style`
-  - 设置文本、字体、字号、文字颜色
+  - Set text, font family, font size, text color, and optional text rotation.
+  - Supports `text_direction` and `text_angle_deg` so narrow modules can use vertical text.
 - `POST /shape/set_text_block`
-  - 调整文本块位置与尺寸
+  - Adjust the text block position and size.
 - `POST /shape/set_colors`
-  - 设置线条颜色、填充颜色、线宽
+  - Set line color, fill color, line weight, line pattern, fill pattern, rounding, and arrowheads.
+  - Also supports raw route-control cells such as `ShapeRouteStyle` and `ConLineRouteExt`.
 
-### 预览与闭环
+Upstream note:
+- Whether a connector should be `straight_horizontal`, `straight_vertical`, `orthogonal`, or `curved` is a `drawskills` decision.
+- `visioskills` only exposes the low-level controls needed to land that routing intent.
 
+### Preview and artifacts
 - `POST /session/export_png`
-  - 导出当前页 PNG，供 agent 做闭环预览
+  - Export the current page as PNG for closed-loop review.
 - `GET /artifact/download/{ticket}`
-  - 使用一次性 ticket 下载导出产物
+  - Download an exported artifact with a one-time ticket.
 
-## 操作约束
+## Usage constraints
 
-### 鉴权
+### Auth
+- Use `Authorization: Bearer <token>`.
 
-- 使用 `Authorization: Bearer <token>`
+### Idempotency
+- Every write request must carry a `request_id`.
+- Retries should reuse the same `request_id`.
 
-### 幂等
+### Explicit targeting
+- Prefer explicit `session_id`, `shape_id`, and `page_name`.
+- Do not rely on implicit UI selection state.
 
-- 所有写操作都必须带 `request_id`
-- 重试时保持相同 `request_id`
+## Boundary
 
-### 定位
+`visioskills` answers "how do we operate Visio reliably?"
 
-- 优先使用显式 `session_id / shape_id / page_name`
-- 不依赖隐式 UI 状态
+It does not decide:
+- what the figure means
+- what the final layout should be
+- what aesthetic tradeoffs to make
+- what lessons should become reusable policy
 
-## visioskills 的职责边界
+Those belong to `plannerskills`, `drawskills`, and `learningskills`.
 
-`visioskills` 只负责“怎么稳定做动作”，不负责：
+## Current gaps
 
-- 高层图语义规划
-- 审美判断
-- 经验沉淀
+Still missing or weak:
+- relationship readback at graph level, not just single-shape inspection
+- higher-level editing such as duplicate, group, ungroup, delete, and z-order
+- richer connector routing policy beyond low-level cells and glue-side control
+- image placement and richer master/stencil usage
 
-这些分别属于 `drawskills` 和 `learningskills`。
-
-## 当前关键缺口
-
-为了让 agent 更像人一样使用 Visio，`visioskills` 还需要继续补这几类读回能力：
-
-1. 页面读回
-   - 列出 page、页面尺寸、当前页边界
-2. 图形读回
-   - 列出 shape、name、geometry、style、text
-3. 关系读回
-   - 谁连着谁、connector 属于哪一层
-4. 高级编辑
-   - duplicate、group、ungroup、delete、z-order、arrowhead、line routing
-
-没有这些读回能力，agent 虽然“能画”，但还不够“能看自己画了什么”。
-
-## 推荐使用顺序
+## Recommended order
 
 1. `health`
 2. `ping_visio`
 3. `session/create`
-4. 一批 `shape/add`
-5. `shape/update_geometry` / `align` / `distribute`
-6. `shape/connect`
-7. `shape/set_text_style` / `set_text_block` / `set_colors`
-8. `session/export_png`
-9. `session/save`
+4. `page/info`
+5. `page/setup` if needed
+6. `shape/add`
+7. `shape/update_geometry` / `shape/align` / `shape/distribute`
+8. `shape/connect`
+9. `shape/set_text_style` / `shape/set_text_block` / `shape/set_colors`
+10. `shape/describe` for readback
+11. `session/export_png`
+12. `session/save`
 
-## 维护原则
+## Maintenance rule
 
-每增加一个操作，都要问这 3 个问题：
-
-1. 它是不是足够原子？
-2. 它能不能幂等、回放、定位问题？
-3. 它应该属于 `visioskills`，还是其实属于 `drawskills`？
+Before adding a new operation, check:
+1. Is it atomic enough?
+2. Is it idempotent and explicitly targetable?
+3. Does it truly belong in `visioskills`, or should it stay in planner/draw policy instead?

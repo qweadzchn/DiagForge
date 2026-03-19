@@ -1,10 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://png2vsdx.local/schemas/draw-job.schema.json",
+  "$id": "https://diagforge.local/schemas/draw-job.schema.json",
   "title": "Draw Job Config",
   "type": "object",
   "required": ["job_name", "task", "paths", "bridge", "execution"],
   "properties": {
+    "run_mode": {
+      "type": "string",
+      "enum": ["development", "operation"],
+      "description": "Optional. development allows repo-level fixes during a job; operation limits writes to job artifacts and outputs."
+    },
     "job_name": {
       "type": "string",
       "minLength": 1
@@ -21,18 +26,28 @@
           "type": "string",
           "description": "Final VSDX file name under OutputVSDX/"
         },
+        "goal": {
+          "type": "string",
+          "description": "Preferred human success definition for this drawing task."
+        },
+        "diagram_hint": {
+          "type": "string",
+          "description": "Optional human hint such as pipeline, architecture, or mixed-layout."
+        },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "Optional free-form notes. Prefer task.goal for the main success definition."
         }
       }
     },
     "paths": {
       "type": "object",
-      "required": ["input_dir", "preview_dir", "final_vsdx_dir"],
+      "required": ["input_dir", "preview_dir", "final_vsdx_dir", "workspace_root"],
       "properties": {
         "input_dir": { "type": "string" },
         "preview_dir": { "type": "string" },
-        "final_vsdx_dir": { "type": "string" }
+        "final_vsdx_dir": { "type": "string" },
+        "workspace_root": { "type": "string" }
       }
     },
     "bridge": {
@@ -68,11 +83,20 @@
         "export_preview_each_round": {
           "type": "boolean"
         },
+        "write_round_review_each_round": {
+          "type": "boolean",
+          "description": "Optional. If omitted, the workflow should still assume round review is recommended."
+        },
         "clear_session_after_round": {
           "type": "boolean"
         },
         "record_lessons_each_round": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether each round should actively look for reusable lessons."
+        },
+        "stop_when_satisfied": {
+          "type": "boolean",
+          "description": "Optional. Stop early when preview quality is already acceptable."
         },
         "keep_final_vsdx": {
           "type": "boolean"

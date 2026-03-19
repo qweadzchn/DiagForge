@@ -6,6 +6,7 @@ import threading
 import time
 import uuid
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 from fastapi import FastAPI, Header, HTTPException
@@ -18,11 +19,13 @@ except ImportError:  # allows `uvicorn app:app` from this directory
     from visio_adapter import VisioAdapter, VisioError
 
 
-APP_NAME = "png2vsdx-visio-bridge"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+APP_NAME = "diagforge-visio-bridge"
 APP_VERSION = "0.1.0"
 TOKEN_ENV = "VISIO_BRIDGE_TOKEN"
 EXPORT_DIR_ENV = "VISIO_BRIDGE_EXPORT_DIR"
-DEFAULT_EXPORT_DIR = r"D:\work\png2vsdx\exports"
+DEFAULT_EXPORT_DIR = str(REPO_ROOT / "exports")
 EXPORT_TICKET_TTL_S = 300
 
 
@@ -78,6 +81,8 @@ class SetShapeTextStyleRequest(BaseModel):
     font_name: Optional[str] = None
     font_size_pt: Optional[float] = None
     font_rgb: Optional[tuple[int, int, int]] = None
+    text_direction: Optional[str] = Field(default=None, description="horizontal|vertical|auto")
+    text_angle_deg: Optional[float] = None
 
 
 class SetShapeTextBlockRequest(BaseModel):
@@ -97,6 +102,17 @@ class SetShapeColorRequest(BaseModel):
     line_rgb: Optional[tuple[int, int, int]] = None
     fill_rgb: Optional[tuple[int, int, int]] = None
     line_weight_pt: Optional[float] = None
+    line_pattern: Optional[int] = None
+    fill_pattern: Optional[int] = None
+    rounding: Optional[float] = None
+    begin_arrow: Optional[int] = None
+    end_arrow: Optional[int] = None
+    begin_arrow_size: Optional[int] = None
+    end_arrow_size: Optional[int] = None
+    shape_route_style: Optional[int] = None
+    con_line_route_ext: Optional[int] = None
+    shape_permeable_x: Optional[bool] = None
+    shape_permeable_y: Optional[bool] = None
 
 
 class AlignShapesRequest(BaseModel):
@@ -119,6 +135,10 @@ class ConnectShapesRequest(BaseModel):
     from_shape_id: int
     to_shape_id: int
     page_name: Optional[str] = None
+    from_pin_x: Optional[float] = None
+    from_pin_y: Optional[float] = None
+    to_pin_x: Optional[float] = None
+    to_pin_y: Optional[float] = None
 
 
 class SaveSessionRequest(BaseModel):
@@ -144,6 +164,27 @@ class SelectShapeRequest(BaseModel):
     request_id: str
     session_id: str
     shape_id: int
+
+
+class PageInfoRequest(BaseModel):
+    request_id: str
+    session_id: str
+    page_name: Optional[str] = None
+
+
+class PageSetupRequest(BaseModel):
+    request_id: str
+    session_id: str
+    page_name: Optional[str] = None
+    page_width_in: Optional[float] = None
+    page_height_in: Optional[float] = None
+
+
+class ShapeDescribeRequest(BaseModel):
+    request_id: str
+    session_id: str
+    shape_id: int
+    page_name: Optional[str] = None
 
 
 class GenericOk(BaseModel):
@@ -367,6 +408,8 @@ def set_text_style(req: SetShapeTextStyleRequest, authorization: Optional[str] =
             font_name=req.font_name,
             font_size_pt=req.font_size_pt,
             font_rgb=req.font_rgb,
+            text_direction=req.text_direction,
+            text_angle_deg=req.text_angle_deg,
         )
         return {"ok": True, "data": data}
 
@@ -402,7 +445,56 @@ def set_colors(req: SetShapeColorRequest, authorization: Optional[str] = Header(
             line_rgb=req.line_rgb,
             fill_rgb=req.fill_rgb,
             line_weight_pt=req.line_weight_pt,
+            line_pattern=req.line_pattern,
+            fill_pattern=req.fill_pattern,
+            rounding=req.rounding,
+            begin_arrow=req.begin_arrow,
+            end_arrow=req.end_arrow,
+            begin_arrow_size=req.begin_arrow_size,
+            end_arrow_size=req.end_arrow_size,
+            shape_route_style=req.shape_route_style,
+            con_line_route_ext=req.con_line_route_ext,
+            shape_permeable_x=req.shape_permeable_x,
+            shape_permeable_y=req.shape_permeable_y,
         )
+        return {"ok": True, "data": data}
+
+    return GenericOk(**_idempotent(req.request_id, op))
+
+
+@app.post("/page/info", response_model=GenericOk)
+def page_info(req: PageInfoRequest, authorization: Optional[str] = Header(default=None)) -> GenericOk:
+    _check_auth(authorization)
+
+    def op() -> Dict[str, Any]:
+        data = adapter.get_page_info(req.session_id, req.page_name)
+        return {"ok": True, "data": data}
+
+    return GenericOk(**_idempotent(req.request_id, op))
+
+
+@app.post("/page/setup", response_model=GenericOk)
+def page_setup(req: PageSetupRequest, authorization: Optional[str] = Header(default=None)) -> GenericOk:
+    _check_auth(authorization)
+
+    def op() -> Dict[str, Any]:
+        data = adapter.setup_page(
+            req.session_id,
+            req.page_name,
+            req.page_width_in,
+            req.page_height_in,
+        )
+        return {"ok": True, "data": data}
+
+    return GenericOk(**_idempotent(req.request_id, op))
+
+
+@app.post("/shape/describe", response_model=GenericOk)
+def describe_shape(req: ShapeDescribeRequest, authorization: Optional[str] = Header(default=None)) -> GenericOk:
+    _check_auth(authorization)
+
+    def op() -> Dict[str, Any]:
+        data = adapter.describe_shape(req.session_id, req.shape_id, req.page_name)
         return {"ok": True, "data": data}
 
     return GenericOk(**_idempotent(req.request_id, op))
@@ -435,12 +527,24 @@ def connect_shapes(req: ConnectShapesRequest, authorization: Optional[str] = Hea
     _check_auth(authorization)
 
     def op() -> Dict[str, Any]:
-        data = adapter.connect_shapes(
-            session_id=req.session_id,
-            from_shape_id=req.from_shape_id,
-            to_shape_id=req.to_shape_id,
-            page_name=req.page_name,
-        )
+        if any(value is not None for value in (req.from_pin_x, req.from_pin_y, req.to_pin_x, req.to_pin_y)):
+            data = adapter.connect_shapes_with_pins(
+                session_id=req.session_id,
+                from_shape_id=req.from_shape_id,
+                to_shape_id=req.to_shape_id,
+                page_name=req.page_name,
+                from_pin_x=req.from_pin_x,
+                from_pin_y=req.from_pin_y,
+                to_pin_x=req.to_pin_x,
+                to_pin_y=req.to_pin_y,
+            )
+        else:
+            data = adapter.connect_shapes(
+                session_id=req.session_id,
+                from_shape_id=req.from_shape_id,
+                to_shape_id=req.to_shape_id,
+                page_name=req.page_name,
+            )
         return {"ok": True, "data": data}
 
     return GenericOk(**_idempotent(req.request_id, op))

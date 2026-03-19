@@ -1,18 +1,115 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://png2vsdx.local/schemas/drawdsl.schema.json",
+  "$id": "https://diagforge.local/schemas/drawdsl.schema.json",
   "title": "DrawDSL",
   "type": "object",
   "required": ["version", "canvas", "nodes", "edges"],
   "properties": {
     "version": { "type": "string" },
     "skill_id": { "type": "string" },
+    "layout": {
+      "type": "object",
+      "properties": {
+        "family": { "type": "string" },
+        "flow_direction": { "type": "string", "enum": ["left_to_right", "top_to_bottom", "mixed"] },
+        "lanes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+              "id": { "type": "string" },
+              "role": { "type": "string" }
+            }
+          }
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "members"],
+            "properties": {
+              "id": { "type": "string" },
+              "arrangement": { "type": "string", "enum": ["manual", "row", "column"] },
+              "members": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "gap_x": { "type": "number" },
+              "gap_y": { "type": "number" },
+              "min_gap_x": { "type": "number" },
+              "min_gap_y": { "type": "number" },
+              "align_x": { "type": "string", "enum": ["left", "center", "right"] },
+              "align_y": { "type": "string", "enum": ["top", "center", "bottom"] },
+              "margin_left": { "type": "number" },
+              "margin_right": { "type": "number" },
+              "margin_top": { "type": "number" },
+              "margin_bottom": { "type": "number" }
+            }
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["source", "target", "type"],
+            "properties": {
+              "source": { "type": "string" },
+              "target": { "type": "string" },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "left_of",
+                  "right_of",
+                  "above",
+                  "below",
+                  "align_left",
+                  "align_right",
+                  "align_top",
+                  "align_bottom",
+                  "align_center_x",
+                  "align_center_y"
+                ]
+              },
+              "gap": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
     "canvas": {
       "type": "object",
       "required": ["unit"],
       "properties": {
         "unit": { "type": "string", "enum": ["in", "cm", "mm"] },
-        "page_name": { "type": "string" }
+        "page_name": { "type": "string" },
+        "page_width_in": { "type": "number" },
+        "page_height_in": { "type": "number" },
+        "page_margin_in": { "type": "number" },
+        "auto_resize_to_content": { "type": "boolean" }
+      }
+    },
+    "text_policy": {
+      "type": "object",
+      "properties": {
+        "font_name": { "type": "string" },
+        "title_font_size_pt": { "type": "number" },
+        "body_font_size_pt": { "type": "number" },
+        "annotation_font_size_pt": { "type": "number" },
+        "allow_rotation": { "type": "boolean" },
+        "box_fit_mode": { "type": "string", "enum": ["grow_box", "shrink_text", "wrap_then_grow_box"] }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "min_gap_x": { "type": "number" },
+        "min_gap_y": { "type": "number" },
+        "avoid_overlap": { "type": "boolean" },
+        "enforce_text_box_coupling": { "type": "boolean" },
+        "default_title_clearance_y": { "type": "number" },
+        "default_container_padding_x": { "type": "number" },
+        "default_container_padding_y": { "type": "number" }
       }
     },
     "nodes": {
@@ -28,6 +125,23 @@
           "width": { "type": "number" },
           "height": { "type": "number" },
           "text": { "type": "string" },
+          "region_id": { "type": "string" },
+          "container_id": { "type": "string" },
+          "role": { "type": "string" },
+          "text_direction": { "type": "string", "enum": ["horizontal", "vertical", "auto"] },
+          "text_angle_deg": { "type": "number" },
+          "padding_x": { "type": "number" },
+          "padding_y": { "type": "number" },
+          "title_clearance_y": { "type": "number" },
+          "text_block": {
+            "type": "object",
+            "properties": {
+              "txt_pin_x": { "type": "number" },
+              "txt_pin_y": { "type": "number" },
+              "txt_width": { "type": "number" },
+              "txt_height": { "type": "number" }
+            }
+          },
           "style": {
             "type": "object",
             "properties": {
@@ -50,7 +164,17 @@
                 "maxItems": 3
               },
               "font_name": { "type": "string" },
-              "font_size_pt": { "type": "number" }
+              "font_size_pt": { "type": "number" },
+              "line_weight_pt": { "type": "number" },
+              "line_pattern": { "type": "integer" },
+              "fill_pattern": { "type": "integer" },
+              "rounding": { "type": "number" },
+              "begin_arrow": { "type": "integer" },
+              "end_arrow": { "type": "integer" },
+              "begin_arrow_size": { "type": "integer" },
+              "end_arrow_size": { "type": "integer" },
+              "shape_permeable_x": { "type": "boolean" },
+              "shape_permeable_y": { "type": "boolean" }
             }
           }
         }
@@ -64,7 +188,52 @@
         "properties": {
           "id": { "type": "string" },
           "from": { "type": "string" },
-          "to": { "type": "string" }
+          "to": { "type": "string" },
+          "semantic": { "type": "string" },
+          "route_intent": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "straight",
+              "straight_horizontal",
+              "straight_vertical",
+              "orthogonal",
+              "curved"
+            ]
+          },
+          "from_pin": {
+            "type": "object",
+            "properties": {
+              "x_percent": { "type": "number" },
+              "y_percent": { "type": "number" }
+            }
+          },
+          "to_pin": {
+            "type": "object",
+            "properties": {
+              "x_percent": { "type": "number" },
+              "y_percent": { "type": "number" }
+            }
+          },
+          "style": {
+            "type": "object",
+            "properties": {
+              "line_rgb": {
+                "type": "array",
+                "items": { "type": "integer", "minimum": 0, "maximum": 255 },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "line_weight_pt": { "type": "number" },
+              "line_pattern": { "type": "integer" },
+              "begin_arrow": { "type": "integer" },
+              "end_arrow": { "type": "integer" },
+              "begin_arrow_size": { "type": "integer" },
+              "end_arrow_size": { "type": "integer" },
+              "shape_route_style": { "type": "integer" },
+              "con_line_route_ext": { "type": "integer" }
+            }
+          }
         }
       }
     }

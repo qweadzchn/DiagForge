@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://diagforge.local/schemas/plan.schema.json",
+  "title": "Drawing Plan",
+  "type": "object",
+  "required": [
+    "job_name",
+    "goal",
+    "selected_drawskills",
+    "selected_visioskills",
+    "drawing_strategy",
+    "layout_constraints",
+    "style_constraints",
+    "capability_plan",
+    "round_objectives",
+    "handoff_to_drawskills",
+    "handoff_to_visioskills"
+  ],
+  "properties": {
+    "job_name": { "type": "string" },
+    "goal": { "type": "string" },
+    "selected_drawskills": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "selected_visioskills": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "drawing_strategy": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "layout_constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "style_constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "review_feedback_applied": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "current_round_adjustments": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "capability_plan": {
+      "type": "array",
+      "description": "Planner-owned closed-loop mapping from drawing intent to the operation bundle, review signals, and routing rules for failures.",
+      "items": {
+        "type": "object",
+        "required": [
+          "intent_id",
+          "intent_summary",
+          "target_region",
+          "drawskills_responsibilities",
+          "visioskills_operations",
+          "verification_signals",
+          "failure_routing"
+        ],
+        "properties": {
+          "intent_id": { "type": "string" },
+          "intent_summary": { "type": "string" },
+          "target_region": { "type": "string" },
+          "drawskills_responsibilities": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "visioskills_operations": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "verification_signals": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "failure_routing": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["signal", "owner_layer", "action"],
+              "properties": {
+                "signal": { "type": "string" },
+                "owner_layer": {
+                  "type": "string",
+                  "enum": ["plannerskills", "drawskills", "visioskills", "learningskills", "mixed"]
+                },
+                "action": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "round_objectives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["round", "objective"],
+        "properties": {
+          "round": { "type": "integer", "minimum": 1 },
+          "objective": { "type": "string" },
+          "preview_focus": { "type": "string" },
+          "exit_criteria": { "type": "string" }
+        }
+      }
+    },
+    "handoff_to_drawskills": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "handoff_to_visioskills": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

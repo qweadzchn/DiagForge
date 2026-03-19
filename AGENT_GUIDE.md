@@ -1,90 +1,122 @@
 # AGENT_GUIDE
 
-这个文件是本项目给 agent 的总入口。
+This is the main entry point for any agent working in this repository.
 
-目标不是让 agent “直接调几个接口”，而是让 agent 明确：
+The goal is not "call a few Visio APIs".
+The goal is "understand what to draw, why it should look that way, which controls are needed, how to verify the result, and how to improve the next round".
 
-1. 什么时候该调用 `visioskills`
-2. 什么时候该调用 `drawskills`
-3. 什么时候必须进入 `learningskills`
-4. 如何把一次画图任务走成闭环
+## Core model
 
-## Core Mental Model
+- `Setup` decides which job is running, where artifacts go, how many rounds are allowed, and what gets saved.
+- `plannerskills` decides what the input figure is, which regions matter, what should be drawn first, and which capabilities are needed.
+- `drawskills` turns that plan into layout, typography, spacing, and DrawDSL.
+- `visioskills` executes explicit Visio operations reliably.
+- `learningskills` turns repeated failures and fixes into reusable lessons.
 
-- `visioskills` 解决“怎么稳定操作 Visio”
-- `drawskills` 解决“怎么把图画得清楚、整齐、像样”
-- `learningskills` 解决“这次遇到的问题，下次别再从零踩一遍”
+Do not collapse these layers into one giant prompt.
 
-不要把三者混成一个大 prompt。
+## Read order for a new job
 
-## Recommended Workflow
+1. `Setup/draw-job.local.json`
+2. `docs/LAYER_CONTRACTS.md`
+3. `docs/ARTIFACT_CONTRACTS.md`
+4. The relevant `SKILL.md`
+5. The current job artifacts in `Setup/jobs/<job_name>/`
 
-### 1. Preflight
+## Standard workflow
 
-先确认运行态，再开始画：
+1. Preflight the bridge and token.
+2. Produce or update `analysis.json`.
+3. Produce or update `plan.json`.
+4. Produce or update `drawdsl.json`.
+5. Execute in Visio.
+6. Export preview PNG.
+7. Write `round-review.json`.
+8. Promote reusable findings into `learningskills`.
 
-1. bridge 已启动
-2. `GET /health` 正常
-3. `POST /ping_visio` 正常
-4. token、导出目录、保存路径都明确
-5. 如果存在 `Setup/draw-job.local.json`，把它当作本次任务的执行配置来源
+## The closed-loop rule
 
-如果 preflight 没过，不进入绘图。
+Every meaningful drawing task must answer four questions explicitly:
 
-### 2. Pick The Right Layer
+1. What are we trying to draw?
+2. Which operations and controls are needed to draw it well?
+3. How will we know it worked?
+4. If it failed, which layer owns the fix?
 
-遇到任务时按下面规则分流：
+This rule lives primarily in `plan.json`, not only in the operator's head.
 
-- 要新建/编辑/连线/保存/导出：先看 `visioskills/visio-operator/SKILL.md`
-- 要复现论文图、排版研究图、控制布局和样式：看 `drawskills/visio-figure-builder/SKILL.md`
-- 要总结“这次为什么画歪了、为什么文本爆掉了、为什么导出后发现难看”：看 `learningskills/visio-iteration-journal/SKILL.md`
+## Plan-to-operation loop
 
-## Closed-Loop Drawing Rule
+`plan.json` should not stop at strategy like "make text readable".
+It must also contain closed-loop intent bundles:
 
-任何稍复杂的图，都不要一次画到底。
+- the drawing intent
+- the target region
+- the drawskills responsibilities
+- the visioskills operation bundle
+- the verification signals
+- the failure routing rules
 
-建议流程：
+Example:
 
-1. 先出结构骨架
-2. 对齐与分布
-3. 再连主链路
-4. 再做样式
-5. 导出 PNG 预览
-6. 发现问题后做一轮修正
-7. 把可复用经验写进 `learningskills/lessons/`
+- Intent: keep narrow modules readable
+- Drawskills: choose line breaks, font size band, minimum width, gap policy
+- Visioskills: `shape/add`, `shape/set_text_style`, `shape/set_text_block`, `shape/describe`
+- Verification: no overflow, font landed, box size matches text, neighbors do not collide
+- Failure routing:
+  - if font or text block did not land -> `visioskills`
+  - if font landed but modules still collide -> `drawskills`
+  - if the wrong region was prioritized -> `plannerskills`
 
-## What Good Execution Looks Like
+## Improvement gate
 
-一次高质量执行通常会留下这些东西：
+"Next round must be better" is not a slogan here.
+It means:
 
-- 明确的操作顺序
-- 可追溯的 `request_id`
-- 保存后的 `.vsdx`
-- 一张导出的 PNG 预览
-- 一份简洁的变更说明
-- 如有新经验，一条新的 generalized lesson
+1. Every round exports a preview.
+2. Every round review names concrete problems.
+3. The next round writes those problems back into `plan.json`.
+4. The next round preserves what already improved.
+5. If a rerun does not solve a prior issue or add useful new information, it is not progress.
 
-## What Not To Do
+## When to change the repo
 
-- 不要依赖“当前选中的对象”这种隐式上下文
-- 不要在对齐前就把所有 connector 画满
-- 不要一边发现问题一边只在脑子里记，最后什么都没沉淀
-- 不要把一次性的临时修补直接写进 drawskill，当成通用规则
+In `development` mode, the agent may change:
 
-## File Map
+- schemas
+- docs
+- drawskills references
+- visio bridge code
+- execution scripts
 
-- `visioskills/OPERATIONS.md`: 当前原子操作能力与缺口
-- `Setup/README.md`: 人类操作流程与任务配置入口
-- `Setup/job.schema.json`: 单次绘图任务的执行设置 schema
-- `docs/PROJECT_STRUCTURE.md`: 仓库结构总览
-- `docs/architecture/`: 设计决策、链路方案、系统分层
-- `demo/README.md`: 示例脚本说明
+This is correct when the blocker is structural rather than job-specific.
 
-## Default Improvement Loop
+In `operation` mode, the agent should mostly stay inside the job workspace and output artifacts.
 
-当一次绘图任务完成后，优先问这 4 个问题：
+## What good execution looks like
 
-1. 这次问题是操作层问题，还是构图层问题？
-2. 这个修复是一次性的，还是可复用的？
-3. 它应该沉淀到 `visioskills`、`drawskills` 还是 `learningskills`？
-4. 下次 agent 如何更早发现它？
+- Clear layer boundaries
+- Traceable artifacts
+- Explicit plan-to-operation mapping
+- PNG previews for review
+- Verified execution when possible
+- Reusable lessons when a fix generalizes
+
+## What not to do
+
+- Do not blame layout when the bridge has not been verified.
+- Do not stuff one-off patches directly into generic skills without review.
+- Do not let `visioskills` silently make planning decisions.
+- Do not let `drawskills` become a long-term lesson dump.
+- Do not rerun unchanged work and call it improvement.
+
+## Key files
+
+- `docs/LAYER_CONTRACTS.md`
+- `docs/ARTIFACT_CONTRACTS.md`
+- `docs/PLAN_TO_OPERATION_LOOP.md`
+- `docs/PREVIEW_REVIEW_CHECKLIST.md`
+- `Setup/analysis.schema.json`
+- `Setup/plan.schema.json`
+- `Setup/round-review.schema.json`
+- `visioskills/OPERATIONS.md`

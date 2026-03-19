@@ -1,15 +1,19 @@
 {
   "$schema": "./job.schema.json",
+  "run_mode": "development",
   "job_name": "replace-me",
   "task": {
     "input_png": "example.png",
     "final_vsdx_name": "example_final.vsdx",
-    "description": "Describe what should be reproduced or emphasized."
+    "goal": "Describe what should be reproduced and what matters most to the human viewer.",
+    "diagram_hint": "",
+    "description": "Optional extra notes."
   },
   "paths": {
     "input_dir": "../InputPNG",
     "preview_dir": "../OutputPreview",
-    "final_vsdx_dir": "../OutputVSDX"
+    "final_vsdx_dir": "../OutputVSDX",
+    "workspace_root": "../Setup/jobs"
   },
   "bridge": {
     "base_url": "http://127.0.0.1:18761",
@@ -17,8 +21,10 @@
   },
   "execution": {
     "max_rounds": 3,
+    "stop_when_satisfied": true,
     "save_intermediate_vsdx": false,
     "export_preview_each_round": true,
+    "write_round_review_each_round": true,
     "clear_session_after_round": true,
     "record_lessons_each_round": true,
     "keep_final_vsdx": true

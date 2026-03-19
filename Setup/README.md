@@ -1,66 +1,83 @@
 # Setup Workspace
 
-这个目录是“单次画图任务”的入口。
+`Setup/` is the entry point for one drawing job.
 
-目标是把一次绘图任务标准化成：
+Its job is to answer:
 
-1. 把参考图放进 `InputPNG/`
-2. 改一个本地配置文件
-3. 让 agent 或脚本按配置执行闭环绘图
-4. 预览结果放到 `OutputPreview/`
-5. 最终 `.vsdx` 放到 `OutputVSDX/`
+- which figure are we drawing?
+- where do outputs go?
+- how many rounds are allowed?
+- what gets saved or cleaned up?
 
-## 推荐目录约定
+It should not decide the diagram layout or directly operate Visio.
 
-- `../InputPNG/`
-  - 输入参考图
-- `../OutputPreview/`
-  - 每轮 PNG 预览
-- `../OutputVSDX/`
-  - 最终 `.vsdx`
+## Files you edit manually
 
-## 你平时怎么用
+- `InputPNG/<image>.png`
+- `Setup/draw-job.local.json`
 
-1. 把要临摹的 PNG 放进 `InputPNG/`
-2. 复制 `draw-job.template.json` 为 `draw-job.local.json`
-3. 在 `draw-job.local.json` 里改：
-   - `job_name`
-   - `task.input_png`
-   - `task.final_vsdx_name`
-   - `execution.max_rounds`
-4. 在启动 bridge 的同一个 shell 里设置：
-   - `VISIO_BRIDGE_TOKEN`
-   - 如有需要，`VISIO_BRIDGE_BASE`
-5. 运行：
+## Files the job workflow produces
+
+- `Setup/jobs/<job>/run-summary.json`
+- `Setup/jobs/<job>/analysis.json`
+- `Setup/jobs/<job>/plan.json`
+- `Setup/jobs/<job>/drawdsl.json`
+- `Setup/jobs/<job>/reviews/`
+- `OutputPreview/<job>/round-*.png`
+- `OutputVSDX/<final>.vsdx`
+
+## Typical workflow
+
+1. Put the reference PNG into `InputPNG/`.
+2. Copy `draw-job.template.json` to `draw-job.local.json`.
+3. Edit the local config:
+
+- `run_mode`
+- `job_name`
+- `task.input_png`
+- `task.final_vsdx_name`
+- `task.goal`
+- `execution.max_rounds`
+
+4. In the shell that can reach the Windows bridge, set:
+
+- `VISIO_BRIDGE_TOKEN`
+- optionally `VISIO_BRIDGE_BASE`
+
+5. Run:
 
 ```powershell
 python Setup\run_draw_job.py --config Setup\draw-job.local.json
 ```
 
-这个预检会在以下情况直接失败退出：
+This preflight will fail fast if:
 
-- 输入 PNG 不存在
-- bridge 的 `health` 不通
-- `ping_visio` 因 token 或 Visio 运行态失败
+- the input PNG is missing
+- the bridge is down
+- Visio cannot be reached
+- the token is wrong
 
-6. 然后告诉 agent：
-   - “按 `Setup/draw-job.local.json` 画”
-   - 或者直接把输入图片发到聊天里
+It also creates the standard job workspace.
 
-## 默认执行策略
+## Development mode vs operation mode
 
-- 不保存中间 `.vsdx`
-- 每轮导出 PNG 预览
-- 每轮结束后清理 session
-- 每轮总结可复用经验
-- 达到满意结果或轮次上限后结束
-- 默认保留最终 `.vsdx`
+`run_mode` can be:
 
-## 为什么不把这些设置写进 DrawDSL
+- `development`
+  - the agent may update repo structure or capabilities if the blocker is structural
+- `operation`
+  - the agent should mostly stay inside the current job workspace
 
-因为这些是“任务执行设置”，不是“图结构描述”。
+Use `development` when you are still building the system itself.
 
-- DrawDSL 负责“画什么”
-- `Setup/job.schema.json` 负责“这次怎么跑”
+## Important rule
 
-这样边界更清楚，后面更容易维护。
+Every round must leave evidence.
+
+That means:
+
+1. export a preview
+2. write a round review
+3. feed the important review findings back into the next round plan
+
+If a round is rerun without solving a prior issue or learning something new, it is not progress.

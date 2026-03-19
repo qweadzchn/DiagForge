@@ -10,13 +10,13 @@
 
 ### 2. 拷贝项目代码到 Windows（或直接 git clone）
 建议路径：
-`D:\work\png2vsdx`
+`<repo-root>`（例如 `D:\work\DiagForge`）
 
 ### 3. 创建 venv 并安装 bridge 依赖
 在 PowerShell：
 
 ```powershell
-cd D:\work\png2vsdx\visioskills\bridge_server
+cd <repo-root>\visioskills\bridge_server
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -29,7 +29,7 @@ $env:VISIO_BRIDGE_TOKEN="replace-with-a-long-random-token"
 
 ### 5.（可选）设置导出目录（用于闭环截图）
 ```powershell
-$env:VISIO_BRIDGE_EXPORT_DIR="D:\work\png2vsdx\exports"
+$env:VISIO_BRIDGE_EXPORT_DIR="<repo-root>\exports"
 ```
 
 ### 6. 启动 Bridge

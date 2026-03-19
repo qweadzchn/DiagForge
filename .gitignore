@@ -12,3 +12,5 @@ OutputPreview/*
 OutputVSDX/*
 !OutputVSDX/.gitkeep
 Setup/draw-job.local.json
+Setup/jobs/*
+!Setup/jobs/.gitkeep

@@ -2,6 +2,48 @@
 
 ## 顶层目录
 
+### `plannerskills/`
+
+总控规划层。
+
+包含：
+
+- `visio-drawing-orchestrator/`: 教 agent 如何先分析图，再产出计划
+
+职责边界：
+
+- 负责输入图分析和任务拆解
+- 负责决定调用哪些 drawskills / visioskills
+- 不直接承担底层执行
+- 不替代长期经验沉淀
+
+入口文件：
+
+- `plannerskills/README.md`
+- `plannerskills/visio-drawing-orchestrator/SKILL.md`
+
+### `drawskills/`
+
+复合绘图层。
+
+包含：
+
+- `schemas/`: DrawDSL schema
+- `examples/`: 最小结构化绘图示例
+- `visio-figure-builder/`: 教 agent 如何把计划变成布局、样式和 DrawDSL
+
+职责边界：
+
+- 关注布局、样式、排版和图元间协同约束
+- 调用多个 `visioskills`
+- 不直接承载 runtime / bridge 逻辑
+- 不承担总体任务规划
+
+入口文件：
+
+- `drawskills/README.md`
+- `drawskills/visio-figure-builder/SKILL.md`
+
 ### `visioskills/`
 
 Visio 原子执行层。
@@ -19,21 +61,16 @@ Visio 原子执行层。
 - 不负责高层绘图审美
 - 不负责经验沉淀
 
-### `drawskills/`
+入口文件：
 
-复合绘图层。
+- `visioskills/README.md`
+- `visioskills/visio-operator/SKILL.md`
+- `visioskills/OPERATIONS.md`
 
-包含：
-
-- `schemas/`: DrawDSL schema
-- `examples/`: 最小结构化绘图示例
-- `visio-figure-builder/`: 教 agent 如何把高层图意图编排成 Visio 图
-
-职责边界：
-
-- 关注结构规划、布局、样式、排版
-- 调用多个 `visioskills`
-- 不直接承载运行时 bridge 逻辑
+- Note:
+- Current repo uses Visio as the first backend.
+- If Draw.io is added later, prefer a parallel backend directory such as `drawioskills/`.
+- Do not leak backend-specific details back into `plannerskills/` or `drawskills/`.
 
 ### `learningskills/`
 
@@ -49,7 +86,12 @@ Visio 原子执行层。
 
 - 记录 generalized lessons
 - 归因“为什么出问题”
-- 反哺 `visioskills` 和 `drawskills`
+- 反哺 `plannerskills`、`drawskills` 和 `visioskills`
+
+入口文件：
+
+- `learningskills/README.md`
+- `learningskills/visio-iteration-journal/SKILL.md`
 
 ### `Setup/`
 
@@ -59,14 +101,25 @@ Visio 原子执行层。
 
 - `draw-job.template.json`: 任务配置模板
 - `job.schema.json`: 执行设置 schema
+- `analysis.schema.json`: 输入图分析产物 schema
+- `plan.schema.json`: 绘图计划产物 schema
+- `round-review.schema.json`: 轮次复盘产物 schema
 - `run_draw_job.py`: 任务预检脚本
+- `jobs/`: 每个 job 的结构化工作区
 - `README.md`: 人类操作流程
 
 职责边界：
 
 - 负责“这次怎么跑”
+- 负责这次 job 的标准产物路径
 - 不描述图结构本身
 - 不替代 DrawDSL
+
+入口文件：
+
+- `Setup/README.md`
+- `Setup/draw-job.template.json`
+- `Setup/run_draw_job.py`
 
 ### `InputPNG/`
 
@@ -80,21 +133,6 @@ Visio 原子执行层。
 
 最终 VSDX 结果的目录。
 
-### `demo/`
-
-示例脚本目录。
-
-只放：
-
-- 可复现的脚本
-- 演示用途的小体量说明
-
-不放：
-
-- 临时导出物
-- 自动生成的 `.vsdx`
-- 调试残留截图
-
 ### `docs/`
 
 面向人类开发者的项目文档。
@@ -104,13 +142,16 @@ Visio 原子执行层。
 - `setup/`: 部署与 smoke test
 - `research/`: 外部调研
 - `architecture/`: 内部架构与关键决策
+- `LAYER_CONTRACTS.md`: 各层输入输出与禁止行为
 - 其他维护型文档
 
 ## 推荐阅读顺序
 
 1. `README.md`
 2. `Setup/README.md`
-3. `AGENT_GUIDE.md`
-4. `docs/setup/WINDOWS_BRIDGE_DEPLOY.md`
-5. `docs/setup/SMOKE_TEST_FROM_WSL.md`
-6. `docs/architecture/`
+3. `docs/LAYER_CONTRACTS.md`
+4. `docs/ARTIFACT_CONTRACTS.md`
+5. `AGENT_GUIDE.md`
+6. `docs/setup/WINDOWS_BRIDGE_DEPLOY.md`
+7. `docs/setup/SMOKE_TEST_FROM_WSL.md`
+8. `docs/architecture/`

@@ -131,6 +131,8 @@ class VisioAdapter:
         font_name: Optional[str],
         font_size_pt: Optional[float],
         font_rgb: Optional[tuple[int, int, int]],
+        text_direction: Optional[str],
+        text_angle_deg: Optional[float],
     ) -> Dict[str, Any]:
         self._assert_session(session_id)
         return self._run_sync(
@@ -141,6 +143,8 @@ class VisioAdapter:
             font_name,
             font_size_pt,
             font_rgb,
+            text_direction,
+            text_angle_deg,
         )
 
     def set_shape_text_block(
@@ -170,6 +174,17 @@ class VisioAdapter:
         line_rgb: Optional[tuple[int, int, int]],
         fill_rgb: Optional[tuple[int, int, int]],
         line_weight_pt: Optional[float],
+        line_pattern: Optional[int],
+        fill_pattern: Optional[int],
+        rounding: Optional[float],
+        begin_arrow: Optional[int],
+        end_arrow: Optional[int],
+        begin_arrow_size: Optional[int],
+        end_arrow_size: Optional[int],
+        shape_route_style: Optional[int],
+        con_line_route_ext: Optional[int],
+        shape_permeable_x: Optional[bool],
+        shape_permeable_y: Optional[bool],
     ) -> Dict[str, Any]:
         self._assert_session(session_id)
         return self._run_sync(
@@ -179,6 +194,17 @@ class VisioAdapter:
             line_rgb,
             fill_rgb,
             line_weight_pt,
+            line_pattern,
+            fill_pattern,
+            rounding,
+            begin_arrow,
+            end_arrow,
+            begin_arrow_size,
+            end_arrow_size,
+            shape_route_style,
+            con_line_route_ext,
+            shape_permeable_x,
+            shape_permeable_y,
         )
 
     def align_shapes(self, session_id: str, shape_ids: list[int], mode: str) -> Dict[str, Any]:
@@ -191,11 +217,82 @@ class VisioAdapter:
 
     def connect_shapes(self, session_id: str, from_shape_id: int, to_shape_id: int, page_name: Optional[str]) -> Dict[str, Any]:
         self._assert_session(session_id)
-        return self._run_sync(self._connect_shapes_impl, session_id, from_shape_id, to_shape_id, page_name)
+        return self._run_sync(
+            self._connect_shapes_impl,
+            session_id,
+            from_shape_id,
+            to_shape_id,
+            page_name,
+            None,
+            None,
+            None,
+            None,
+        )
+
+    def connect_shapes_with_pins(
+        self,
+        session_id: str,
+        from_shape_id: int,
+        to_shape_id: int,
+        page_name: Optional[str],
+        from_pin_x: Optional[float],
+        from_pin_y: Optional[float],
+        to_pin_x: Optional[float],
+        to_pin_y: Optional[float],
+    ) -> Dict[str, Any]:
+        self._assert_session(session_id)
+        return self._run_sync(
+            self._connect_shapes_impl,
+            session_id,
+            from_shape_id,
+            to_shape_id,
+            page_name,
+            from_pin_x,
+            from_pin_y,
+            to_pin_x,
+            to_pin_y,
+        )
+
+    def get_page_info(self, session_id: str, page_name: Optional[str]) -> Dict[str, Any]:
+        self._assert_session(session_id)
+        return self._run_sync(self._get_page_info_impl, session_id, page_name)
+
+    def setup_page(
+        self,
+        session_id: str,
+        page_name: Optional[str],
+        page_width_in: Optional[float],
+        page_height_in: Optional[float],
+    ) -> Dict[str, Any]:
+        self._assert_session(session_id)
+        return self._run_sync(
+            self._setup_page_impl,
+            session_id,
+            page_name,
+            page_width_in,
+            page_height_in,
+        )
+
+    def describe_shape(self, session_id: str, shape_id: int, page_name: Optional[str]) -> Dict[str, Any]:
+        self._assert_session(session_id)
+        return self._run_sync(self._describe_shape_impl, session_id, shape_id, page_name)
 
     def save_session(self, session_id: str, save_path: Optional[str]) -> Dict[str, Any]:
         self._assert_session(session_id)
-        return self._run_sync(self._save_session_impl, session_id, save_path)
+        data = self._run_sync(self._save_session_impl, session_id, save_path)
+        doc_name = data.get("doc_name")
+        saved_path = data.get("path")
+        if doc_name or saved_path:
+            with self._sessions_lock:
+                current = self._sessions.get(session_id)
+                if current is not None:
+                    self._sessions[session_id] = SessionState(
+                        session_id=current.session_id,
+                        file_path=saved_path if isinstance(saved_path, str) else current.file_path,
+                        visible=current.visible,
+                        doc_name=str(doc_name) if doc_name else current.doc_name,
+                    )
+        return data
 
     def close_session(self, session_id: str, save: bool) -> Dict[str, Any]:
         self._assert_session(session_id)
@@ -238,6 +335,27 @@ class VisioAdapter:
         if page_name:
             return doc.Pages.ItemU(page_name)
         return doc.Pages.Item(1)
+
+    def _escape_formula_string(self, value: str) -> str:
+        return value.replace('"', '""')
+
+    def _safe_formula_u(self, shp, cell_name: str) -> Optional[str]:
+        try:
+            return str(shp.CellsU(cell_name).FormulaU)
+        except Exception:
+            return None
+
+    def _safe_result_iu(self, shp, cell_name: str) -> Optional[float]:
+        try:
+            return float(shp.CellsU(cell_name).ResultIU)
+        except Exception:
+            return None
+
+    def _safe_result_str_u(self, shp, cell_name: str, units: str = "") -> Optional[str]:
+        try:
+            return str(shp.CellsU(cell_name).ResultStrU(units))
+        except Exception:
+            return None
 
     def _ping_impl(self) -> str:
         app = self._get_app()
@@ -335,6 +453,8 @@ class VisioAdapter:
         font_name: Optional[str],
         font_size_pt: Optional[float],
         font_rgb: Optional[tuple[int, int, int]],
+        text_direction: Optional[str],
+        text_angle_deg: Optional[float],
     ) -> Dict[str, Any]:
         app = self._get_app()
         doc = self._get_doc(app, session_id)
@@ -344,14 +464,22 @@ class VisioAdapter:
         if text is not None:
             shp.Text = text
         if font_name:
-            # Use direct quoted face name for broad compatibility across Visio installs.
-            shp.CellsU("Char.Font").FormulaU = f'"{font_name}"'
+            escaped = self._escape_formula_string(font_name)
+            shp.CellsU("Char.Font").FormulaU = f'FONT("{escaped}")'
         if font_size_pt is not None:
             # Char.Size uses drawing units internally; keep explicit point unit.
             shp.CellsU("Char.Size").FormulaU = f"{float(font_size_pt)} pt"
         if font_rgb is not None:
             r, g, b = font_rgb
             shp.CellsU("Char.Color").FormulaU = f"RGB({int(r)},{int(g)},{int(b)})"
+        if text_angle_deg is not None:
+            shp.CellsU("TxtAngle").FormulaU = f"{float(text_angle_deg)} deg"
+        elif text_direction:
+            direction = text_direction.strip().lower()
+            if direction == "vertical":
+                shp.CellsU("TxtAngle").FormulaU = "90 deg"
+            elif direction == "horizontal":
+                shp.CellsU("TxtAngle").FormulaU = "0 deg"
 
         return {"shape_id": shape_id, "updated": True}
 
@@ -387,6 +515,17 @@ class VisioAdapter:
         line_rgb: Optional[tuple[int, int, int]],
         fill_rgb: Optional[tuple[int, int, int]],
         line_weight_pt: Optional[float],
+        line_pattern: Optional[int],
+        fill_pattern: Optional[int],
+        rounding: Optional[float],
+        begin_arrow: Optional[int],
+        end_arrow: Optional[int],
+        begin_arrow_size: Optional[int],
+        end_arrow_size: Optional[int],
+        shape_route_style: Optional[int],
+        con_line_route_ext: Optional[int],
+        shape_permeable_x: Optional[bool],
+        shape_permeable_y: Optional[bool],
     ) -> Dict[str, Any]:
         app = self._get_app()
         doc = self._get_doc(app, session_id)
@@ -401,6 +540,28 @@ class VisioAdapter:
             shp.CellsU("FillForegnd").FormulaU = f"RGB({int(r)},{int(g)},{int(b)})"
         if line_weight_pt is not None:
             shp.CellsU("LineWeight").FormulaU = f"{float(line_weight_pt)} pt"
+        if line_pattern is not None:
+            shp.CellsU("LinePattern").FormulaU = str(int(line_pattern))
+        if fill_pattern is not None:
+            shp.CellsU("FillPattern").FormulaU = str(int(fill_pattern))
+        if rounding is not None:
+            shp.CellsU("Rounding").ResultIU = float(rounding)
+        if begin_arrow is not None:
+            shp.CellsU("BeginArrow").FormulaU = str(int(begin_arrow))
+        if end_arrow is not None:
+            shp.CellsU("EndArrow").FormulaU = str(int(end_arrow))
+        if begin_arrow_size is not None:
+            shp.CellsU("BeginArrowSize").FormulaU = str(int(begin_arrow_size))
+        if end_arrow_size is not None:
+            shp.CellsU("EndArrowSize").FormulaU = str(int(end_arrow_size))
+        if shape_route_style is not None:
+            shp.CellsU("ShapeRouteStyle").FormulaU = str(int(shape_route_style))
+        if con_line_route_ext is not None:
+            shp.CellsU("ConLineRouteExt").FormulaU = str(int(con_line_route_ext))
+        if shape_permeable_x is not None:
+            shp.CellsU("ShapePermeableX").FormulaU = "TRUE" if shape_permeable_x else "FALSE"
+        if shape_permeable_y is not None:
+            shp.CellsU("ShapePermeableY").FormulaU = "TRUE" if shape_permeable_y else "FALSE"
 
         return {"shape_id": shape_id, "updated": True}
 
@@ -482,7 +643,17 @@ class VisioAdapter:
 
         return {"distributed": len(shape_ids), "axis": axis}
 
-    def _connect_shapes_impl(self, session_id: str, from_shape_id: int, to_shape_id: int, page_name: Optional[str]) -> Dict[str, Any]:
+    def _connect_shapes_impl(
+        self,
+        session_id: str,
+        from_shape_id: int,
+        to_shape_id: int,
+        page_name: Optional[str],
+        from_pin_x: Optional[float],
+        from_pin_y: Optional[float],
+        to_pin_x: Optional[float],
+        to_pin_y: Optional[float],
+    ) -> Dict[str, Any]:
         app = self._get_app()
         doc = self._get_doc(app, session_id)
         page = self._get_page(doc, page_name)
@@ -491,13 +662,97 @@ class VisioAdapter:
         dst = page.Shapes.ItemFromID(to_shape_id)
 
         conn = page.Drop(app.ConnectorToolDataObject, 0, 0)
-        self._glue_connector_end(conn, "BeginX", src)
-        self._glue_connector_end(conn, "EndX", dst)
+        self._glue_connector_end(conn, "BeginX", src, from_pin_x, from_pin_y)
+        self._glue_connector_end(conn, "EndX", dst, to_pin_x, to_pin_y)
 
         return {"connector_id": int(conn.ID), "from_shape_id": from_shape_id, "to_shape_id": to_shape_id}
 
-    def _glue_connector_end(self, connector, endpoint_cell: str, target_shape) -> None:
+    def _get_page_info_impl(self, session_id: str, page_name: Optional[str]) -> Dict[str, Any]:
+        app = self._get_app()
+        doc = self._get_doc(app, session_id)
+        page = self._get_page(doc, page_name)
+        width = float(page.PageSheet.CellsU("PageWidth").ResultIU)
+        height = float(page.PageSheet.CellsU("PageHeight").ResultIU)
+        return {
+            "page_name": str(page.NameU),
+            "page_width_in": width,
+            "page_height_in": height,
+        }
+
+    def _setup_page_impl(
+        self,
+        session_id: str,
+        page_name: Optional[str],
+        page_width_in: Optional[float],
+        page_height_in: Optional[float],
+    ) -> Dict[str, Any]:
+        app = self._get_app()
+        doc = self._get_doc(app, session_id)
+        page = self._get_page(doc, page_name)
+
+        if page_width_in is not None:
+            page.PageSheet.CellsU("PageWidth").ResultIU = float(page_width_in)
+        if page_height_in is not None:
+            page.PageSheet.CellsU("PageHeight").ResultIU = float(page_height_in)
+
+        return self._get_page_info_impl(session_id, page_name)
+
+    def _describe_shape_impl(self, session_id: str, shape_id: int, page_name: Optional[str]) -> Dict[str, Any]:
+        app = self._get_app()
+        doc = self._get_doc(app, session_id)
+        page = self._get_page(doc, page_name)
+        shp = page.Shapes.ItemFromID(shape_id)
+        return {
+            "shape_id": int(shp.ID),
+            "name": str(shp.NameU),
+            "page_name": str(page.NameU),
+            "text": str(shp.Text),
+            "x": self._safe_result_iu(shp, "PinX"),
+            "y": self._safe_result_iu(shp, "PinY"),
+            "width": self._safe_result_iu(shp, "Width"),
+            "height": self._safe_result_iu(shp, "Height"),
+            "line_weight_formula": self._safe_formula_u(shp, "LineWeight"),
+            "line_weight_pt": self._safe_result_str_u(shp, "LineWeight", "pt"),
+            "line_pattern": self._safe_formula_u(shp, "LinePattern"),
+            "fill_pattern": self._safe_formula_u(shp, "FillPattern"),
+            "begin_arrow": self._safe_formula_u(shp, "BeginArrow"),
+            "end_arrow": self._safe_formula_u(shp, "EndArrow"),
+            "begin_arrow_size": self._safe_formula_u(shp, "BeginArrowSize"),
+            "end_arrow_size": self._safe_formula_u(shp, "EndArrowSize"),
+            "shape_route_style": self._safe_formula_u(shp, "ShapeRouteStyle"),
+            "con_line_route_ext": self._safe_formula_u(shp, "ConLineRouteExt"),
+            "shape_permeable_x": self._safe_formula_u(shp, "ShapePermeableX"),
+            "shape_permeable_y": self._safe_formula_u(shp, "ShapePermeableY"),
+            "rounding": self._safe_result_iu(shp, "Rounding"),
+            "font_formula": self._safe_formula_u(shp, "Char.Font"),
+            "font_size_formula": self._safe_formula_u(shp, "Char.Size"),
+            "font_size_pt": self._safe_result_str_u(shp, "Char.Size", "pt"),
+            "font_color": self._safe_formula_u(shp, "Char.Color"),
+            "txt_angle_formula": self._safe_formula_u(shp, "TxtAngle"),
+            "txt_angle_deg": self._safe_result_str_u(shp, "TxtAngle", "deg"),
+            "begin_x": self._safe_result_iu(shp, "BeginX"),
+            "begin_y": self._safe_result_iu(shp, "BeginY"),
+            "end_x": self._safe_result_iu(shp, "EndX"),
+            "end_y": self._safe_result_iu(shp, "EndY"),
+            "txt_width": self._safe_result_iu(shp, "TxtWidth"),
+            "txt_height": self._safe_result_iu(shp, "TxtHeight"),
+        }
+
+    def _glue_connector_end(
+        self,
+        connector,
+        endpoint_cell: str,
+        target_shape,
+        pin_x: Optional[float],
+        pin_y: Optional[float],
+    ) -> None:
         cell = connector.CellsU(endpoint_cell)
+        if pin_x is not None and pin_y is not None:
+            try:
+                cell.GlueToPos(target_shape, float(pin_x), float(pin_y))
+                return
+            except Exception:
+                pass
         # Prefer 2D center pin; fallback to 1D line endpoints for line-like shapes.
         try:
             cell.GlueTo(target_shape.CellsU("PinX"))
@@ -571,22 +826,29 @@ class VisioAdapter:
         doc = self._get_doc(app, session_id)
         if save_path:
             doc.SaveAs(save_path)
-            return {"saved": True, "path": save_path}
+            return {"saved": True, "path": save_path, "doc_name": str(doc.Name)}
 
         try:
             doc.Save()
-            return {"saved": True, "path": str(getattr(doc, "Path", ""))}
+            return {"saved": True, "path": str(getattr(doc, "Path", "")), "doc_name": str(doc.Name)}
         except Exception:
             # Unsaved new doc: fallback to user's Documents
             home = os.path.expanduser("~")
-            fallback = os.path.join(home, "Documents", f"png2vsdx_autosave_{session_id[:8]}.vsdx")
+            fallback = os.path.join(home, "Documents", f"diagforge_autosave_{session_id[:8]}.vsdx")
             doc.SaveAs(fallback)
-            return {"saved": True, "path": fallback}
+            return {"saved": True, "path": fallback, "doc_name": str(doc.Name)}
 
     def _close_session_impl(self, session_id: str, save: bool) -> Dict[str, Any]:
         app = self._get_app()
         doc = self._get_doc(app, session_id)
         if save:
             doc.Save()
+        else:
+            # Suppress the save prompt for unsaved scratch documents. Without this,
+            # doc.Close() can block the COM worker waiting for interactive UI.
+            try:
+                doc.Saved = True
+            except Exception:
+                pass
         doc.Close()
         return {"closed": True, "session_id": session_id}

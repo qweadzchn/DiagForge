@@ -1,11 +1,30 @@
 ---
 name: visio-iteration-journal
-description: Distill reusable lessons from Visio drawing iterations in png2vsdx. Use when an agent encounters a drawing problem, layout failure, export surprise, bridge recovery issue, or any repeatable obstacle during Visio work and should convert that one-off fix into a generalized lesson stored under learningskills.
+description: Distill reusable lessons from Visio drawing iterations in DiagForge. Use when an agent encounters a drawing problem, layout failure, export surprise, bridge recovery issue, or any repeatable obstacle during Visio work and should convert that one-off fix into a generalized lesson stored under learningskills.
 ---
 
 # Visio Iteration Journal
 
 这个 skill 负责把“这次好不容易解决的问题”变成“下次 agent 可以直接用的经验”。
+
+## Input Contract
+
+优先读取：
+
+- `../../docs/LAYER_CONTRACTS.md`
+- `../../docs/ARTIFACT_CONTRACTS.md`
+- `../templates/lesson-template.md`
+- `../../Setup/jobs/<job_name>/reviews/round-*.json`
+- 导出预览 PNG
+
+## Output Contract
+
+这个 skill 有两个层次的产物：
+
+- `../../Setup/jobs/<job_name>/reviews/round-*.json`
+- `../lessons/*.md`
+
+如果只是本轮观察，还没抽象成通用规律，就先留在 `round-review.json`，不要直接写进 lesson。
 
 ## When To Capture A Lesson
 
@@ -15,17 +34,8 @@ description: Distill reusable lessons from Visio drawing iterations in png2vsdx.
 - 字体、文本块、尺寸反复调不对
 - connector 画早了导致整图难以维护
 - bridge / session / save / export 出现可复用的恢复经验
+- planner 的图分类或区域拆解明显误判
 - 某个 drawskill 规则明显该补
-
-## What A Good Lesson Contains
-
-一条好 lesson 至少回答这 5 件事：
-
-1. 问题是什么
-2. 触发信号是什么
-3. 根因是什么
-4. 可复用修复方式是什么
-5. 它应该反哺到哪一层
 
 ## Capture Workflow
 
@@ -34,24 +44,18 @@ description: Distill reusable lessons from Visio drawing iterations in png2vsdx.
 3. 用 `../templates/lesson-template.md` 记录
 4. 存到 `../lessons/`
 5. 如果经验需要变成规则：
+   - 规划层经验 -> 更新 `plannerskills`
    - 操作层经验 -> 更新 `visioskills`
    - 构图层经验 -> 更新 `drawskills`
-   - 只是暂时观察 -> 先留在 `lessons/`
+   - 只是暂时观察 -> 先留在 `reviews/`
 
 ## Writing Rule
 
 lesson 必须写成 generalized knowledge，不写成一次任务的流水账。
 
-避免这种写法：
-
-- “今天我在某张图里把第 7 个框往左挪了 0.2 in”
-
-优先这种写法：
-
-- “当同一行模块宽度差异较大时，先统一 anchor，再做 distribute，否则视觉中心会漂移”
-
 ## Files To Read
 
 - `../templates/lesson-template.md`
 - `../../AGENT_GUIDE.md`
+- `../../docs/LAYER_CONTRACTS.md`
 - `../../drawskills/visio-figure-builder/references/layout-iteration-notes.md`

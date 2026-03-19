@@ -102,6 +102,8 @@ class VisioBridgeClient:
         font_name: Optional[str] = None,
         font_size_pt: Optional[float] = None,
         font_rgb: Optional[tuple[int, int, int]] = None,
+        text_direction: Optional[str] = None,
+        text_angle_deg: Optional[float] = None,
     ) -> Dict[str, Any]:
         return self._post(
             "/shape/set_text_style",
@@ -112,6 +114,8 @@ class VisioBridgeClient:
                 "font_name": font_name,
                 "font_size_pt": font_size_pt,
                 "font_rgb": font_rgb,
+                "text_direction": text_direction,
+                "text_angle_deg": text_angle_deg,
             },
         )
 
@@ -143,6 +147,17 @@ class VisioBridgeClient:
         line_rgb: Optional[tuple[int, int, int]] = None,
         fill_rgb: Optional[tuple[int, int, int]] = None,
         line_weight_pt: Optional[float] = None,
+        line_pattern: Optional[int] = None,
+        fill_pattern: Optional[int] = None,
+        rounding: Optional[float] = None,
+        begin_arrow: Optional[int] = None,
+        end_arrow: Optional[int] = None,
+        begin_arrow_size: Optional[int] = None,
+        end_arrow_size: Optional[int] = None,
+        shape_route_style: Optional[int] = None,
+        con_line_route_ext: Optional[int] = None,
+        shape_permeable_x: Optional[bool] = None,
+        shape_permeable_y: Optional[bool] = None,
     ) -> Dict[str, Any]:
         return self._post(
             "/shape/set_colors",
@@ -152,6 +167,17 @@ class VisioBridgeClient:
                 "line_rgb": line_rgb,
                 "fill_rgb": fill_rgb,
                 "line_weight_pt": line_weight_pt,
+                "line_pattern": line_pattern,
+                "fill_pattern": fill_pattern,
+                "rounding": rounding,
+                "begin_arrow": begin_arrow,
+                "end_arrow": end_arrow,
+                "begin_arrow_size": begin_arrow_size,
+                "end_arrow_size": end_arrow_size,
+                "shape_route_style": shape_route_style,
+                "con_line_route_ext": con_line_route_ext,
+                "shape_permeable_x": shape_permeable_x,
+                "shape_permeable_y": shape_permeable_y,
             },
         )
 
@@ -167,10 +193,54 @@ class VisioBridgeClient:
             {"session_id": session_id, "shape_ids": shape_ids, "axis": axis},
         )
 
-    def connect_shapes(self, session_id: str, from_shape_id: int, to_shape_id: int) -> Dict[str, Any]:
+    def connect_shapes(
+        self,
+        session_id: str,
+        from_shape_id: int,
+        to_shape_id: int,
+        *,
+        from_pin_x: Optional[float] = None,
+        from_pin_y: Optional[float] = None,
+        to_pin_x: Optional[float] = None,
+        to_pin_y: Optional[float] = None,
+    ) -> Dict[str, Any]:
         return self._post(
             "/shape/connect",
-            {"session_id": session_id, "from_shape_id": from_shape_id, "to_shape_id": to_shape_id},
+            {
+                "session_id": session_id,
+                "from_shape_id": from_shape_id,
+                "to_shape_id": to_shape_id,
+                "from_pin_x": from_pin_x,
+                "from_pin_y": from_pin_y,
+                "to_pin_x": to_pin_x,
+                "to_pin_y": to_pin_y,
+            },
+        )
+
+    def page_info(self, session_id: str, page_name: Optional[str] = None) -> Dict[str, Any]:
+        return self._post("/page/info", {"session_id": session_id, "page_name": page_name})
+
+    def setup_page(
+        self,
+        session_id: str,
+        page_name: Optional[str] = None,
+        page_width_in: Optional[float] = None,
+        page_height_in: Optional[float] = None,
+    ) -> Dict[str, Any]:
+        return self._post(
+            "/page/setup",
+            {
+                "session_id": session_id,
+                "page_name": page_name,
+                "page_width_in": page_width_in,
+                "page_height_in": page_height_in,
+            },
+        )
+
+    def describe_shape(self, session_id: str, shape_id: int, page_name: Optional[str] = None) -> Dict[str, Any]:
+        return self._post(
+            "/shape/describe",
+            {"session_id": session_id, "shape_id": shape_id, "page_name": page_name},
         )
 
     def save_session(self, session_id: str, save_path: Optional[str] = None) -> Dict[str, Any]:

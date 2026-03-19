@@ -1,83 +1,203 @@
-# png2vsdx
+# DiagForge
 
-让 agent 像人一样使用 Microsoft Visio 画图的实验性执行系统。
+让 agent 像人一样使用 Microsoft Visio 画图.
 
-当前仓库的重点不是“单次画一张图”，而是把这件事拆成可以持续演进的 4 层：
+`DiagForge` is an agentic abstraction layer for diagram drawing on top of Microsoft Visio.
+The goal is not "call a few Visio APIs".
+The goal is to let an agent:
 
-1. `visioskills`: 教 agent 稳定操作 Visio。
-2. `drawskills`: 教 agent 用这些操作把图画得更好。
-3. `learningskills`: 教 agent 把一次次画图中踩过的坑沉淀成经验。
-4. `AGENT_GUIDE.md`: 教 agent 什么时候用哪一层，以及如何形成闭环。
+1. understand what the user wants to draw
+2. choose how the figure should be laid out and styled
+3. operate Visio reliably
+4. look at its own result
+5. review failures
+6. turn repeated fixes into reusable assets
 
-## Why This Repo Exists
+In this repo, the foundation model is the reasoning engine.
+The durable asset is everything around it: the plans, drawing rules, Visio operations, review loop, and lessons.
 
-现有方案大多停在以下其中一类：
+## Why the name `DiagForge`
 
-- 只能“生成图”，不能长期多轮编辑
-- 只能“操作软件”，没有结构化绘图能力
-- 能跑 demo，但没有回放、复盘、经验沉淀
+`Diag` points to the real object we care about:
 
-`png2vsdx` 想做的是另一条路线：
+- diagram logic
+- spatial topology
+- layout intent
+- editable structure
 
-- `WSL/Agent -> Windows Bridge -> Visio COM`
-- 显式 `session_id / shape_id / request_id`
-- 结构化 DrawDSL，而不是直接自然语言裸奔到 COM
-- 导出 PNG 做闭环预览
-- 逐步补上“看图评估 -> 复盘 -> 沉淀”的能力
+`Forge` points to the working loop:
 
-## Current Status
+- take rough human intent and source material as input
+- execute through software skills
+- read back environment feedback
+- reflect on failures
+- revise the next round
+- turn repeated fixes into durable assets
 
-已经落地：
+The point is not to freeze a PNG into dead pixels.
+The point is to forge a live, structured, human-editable diagram asset on top of existing professional software.
 
-- Windows 侧 FastAPI bridge
-- 单线程 COM 执行队列（STA）
-- 基础原子操作：创建会话、加图形、定位、样式、连线、保存、关闭、导出 PNG
-- WSL 侧 Python HTTP 客户端
-- DrawDSL schema v0.1
-- 研究型绘图 skill 雏形
-- 三轮 closed-loop 绘图 demo
+## Why this repo exists
 
-还在补的关键能力：
+Most diagram automation projects stop at one of these points:
 
-- 当前画布的读回和检查能力
-- DrawDSL -> ExecIR 的编译与校验层
-- learningskills 经验沉淀机制
-- 可回放的回归基准图集
+- they can generate a picture once, but cannot improve round by round
+- they can operate software, but do not know how to draw well
+- they can run a demo, but do not leave reusable planning and review artifacts
 
-## Start Here
+`DiagForge` is trying to build the missing middle layer:
 
-- 想看总入口：`AGENT_GUIDE.md`
-- 想按“放图 -> 改配置 -> 开始画”的方式跑任务：`Setup/README.md`
-- 想看项目结构：`docs/PROJECT_STRUCTURE.md`
-- 想部署 bridge：`docs/setup/WINDOWS_BRIDGE_DEPLOY.md`
-- 想跑最小闭环：`docs/setup/SMOKE_TEST_FROM_WSL.md`
-- 想看系统设计：`docs/architecture/`
+- `intent -> plan -> drawdsl -> visio -> preview -> review -> lesson`
 
-## Repository Layout
+That is the core loop we want to keep even if the base model changes later.
+
+## Layered architecture
+
+The repo is split into five layers.
+Each layer answers one question well.
+
+- `Setup`
+  - Which job is running?
+  - Where do artifacts go?
+  - How many rounds are allowed?
+- `plannerskills`
+  - What kind of figure is this?
+  - Which regions matter?
+  - Which capabilities are needed?
+- `drawskills`
+  - How should layout, text, spacing, containers, and line semantics work?
+  - How do we encode that as DrawDSL?
+- `visioskills`
+  - How do we operate Visio reliably and verifiably?
+- `learningskills`
+  - What reusable lesson did this round teach us?
+
+Read [AGENT_GUIDE.md](AGENT_GUIDE.md) first if you are an agent entering this repo.
+
+## Repository layout
 
 ```text
-visioskills/     Atomic Visio operations, bridge server, operator skill
-drawskills/      Drawing DSL, figure-building skill, layout/style references
-learningskills/  Reusable lessons distilled from drawing iterations
-Setup/           Per-job config, runtime checks, operator entrypoint
-InputPNG/        Source figures to reproduce
-OutputPreview/   Per-round preview exports
-OutputVSDX/      Final VSDX outputs
-demo/            Example scripts only; generated binaries are gitignored
-docs/            Setup, research, architecture, project structure
+Setup/          Job config, workspace bootstrapping, execution scripts
+plannerskills/  Diagram analysis and orchestration rules
+drawskills/     Layout, typography, spacing, DrawDSL, figure-building logic
+visioskills/    Visio bridge, atomic operations, operator guidance
+learningskills/ Reusable lessons from drawing rounds
+InputPNG/       Source figures
+OutputPreview/  Preview PNG exports for review
+OutputVSDX/     Final VSDX outputs
+docs/           Contracts, architecture, setup, workflow docs
 ```
 
-## Quick Workflow
+## Standard artifact chain
 
-1. 在 Windows 启动 bridge。
-2. 把参考图放进 `InputPNG/`，并按 `Setup/README.md` 准备 `Setup/draw-job.local.json`。
-3. 用 `python Setup/run_draw_job.py --config Setup/draw-job.local.json` 做一次任务预检。
-4. 让 agent 先读 `AGENT_GUIDE.md`，再根据任务进入 `visioskills`、`drawskills`、`learningskills`。
-5. 每次大改后导出 PNG 做闭环检查，并把可复用经验沉淀到 `learningskills/lessons/`。
+For one drawing job, the default chain is:
 
-## Near-Term Roadmap
+1. `Setup/draw-job.local.json`
+2. `Setup/jobs/<job>/analysis.json`
+3. `Setup/jobs/<job>/plan.json`
+4. `Setup/jobs/<job>/drawdsl.json`
+5. `OutputPreview/<job>/round-*.png`
+6. `OutputVSDX/<final>.vsdx`
+7. `Setup/jobs/<job>/reviews/round-*.json`
+8. `learningskills/lessons/*.md`
 
-- 补读回能力：列 shape、读 geometry/style、页面边界
-- 补编译层：DrawDSL -> ExecIR -> visioskills
-- 建立学习闭环：问题归因、修复策略、经验模板
-- 建立可展示的 benchmark gallery 和回归流程
+This chain is intentional.
+Do not collapse everything into one script or one giant prompt.
+
+## Current benchmark
+
+The current main training figure is:
+
+- [InputPNG/1.png](InputPNG/1.png)
+
+We use it to stress:
+
+- mixed layout
+- narrow modules
+- text-box-size-gap coupling
+- container sizing
+- connector routing
+- preview-based iteration
+
+The benchmark is important, but it is not the end goal.
+The real goal is to generalize to new figures later.
+
+## Current capabilities
+
+Implemented or usable now:
+
+- Windows FastAPI bridge to Visio COM
+- stable session / save / close / export flow
+- node and connector style readback
+- page auto-fit before drawing
+- text-box coupling
+- transparent label shapes
+- connector glue-side control
+- vertical text support through `DrawDSL -> executor -> bridge -> readback`
+- generic layout post-processing for minimum-gap reflow and container auto-fit
+- structured round reviews and reusable lessons
+
+Still weak or missing:
+
+- richer connector routing control
+- graph-level readback
+- image placement
+- explicit container membership in more job artifacts
+- broader benchmark set across very different figure families
+
+## Quick start
+
+1. Start the Windows bridge.
+2. Put the source PNG into `InputPNG/`.
+3. Copy `Setup/draw-job.template.json` to `Setup/draw-job.local.json`.
+4. Run:
+
+```powershell
+python Setup\run_draw_job.py --config Setup\draw-job.local.json
+```
+
+5. Then follow:
+
+- [Setup/README.md](Setup/README.md)
+- [AGENT_GUIDE.md](AGENT_GUIDE.md)
+- [docs/ARTIFACT_CONTRACTS.md](docs/ARTIFACT_CONTRACTS.md)
+- [docs/PLAN_TO_OPERATION_LOOP.md](docs/PLAN_TO_OPERATION_LOOP.md)
+
+## What makes this different
+
+- It treats drawing as a closed-loop task, not a one-shot generation task.
+- It keeps planning, layout, execution, and learning separate.
+- It values human software assets instead of trying to replace them.
+- It aims to make the repo itself better every time the agent learns a new fix.
+
+## Project direction
+
+This repo is trying to become a reusable "agentic software layer" over existing high-quality tools.
+In this case, the human software asset is Microsoft Visio.
+If the system works, the durable value is not one model run.
+The durable value is the growing library of:
+
+- contracts
+- skills
+- operations
+- layout rules
+- review rules
+- lessons
+
+That is the part we want to keep getting stronger.
+
+## Backend direction
+
+The current backend is Microsoft Visio, so the execution layer today is `visioskills`.
+
+The longer-term direction is broader:
+
+- keep `plannerskills` focused on figure understanding and orchestration
+- keep `drawskills` focused on backend-neutral drawing intent
+- keep `learningskills` focused on reusable failure patterns and lessons
+- allow multiple software backends through backend-specific skill layers such as:
+  - `visioskills`
+  - future `drawioskills`
+
+That means the durable asset should live mostly above any one software backend.
+If a new backend is added later, the goal is to swap the execution layer with minimal change to the higher-level cognitive loop.
