@@ -19,7 +19,7 @@ Useful entry docs:
 
 ## Files you edit manually
 
-- `InputPNG/<image>.png`
+- `InputReference/<image>.png`
 - `Setup/draw-job.local.json`
 
 ## Files the job workflow produces
@@ -30,11 +30,11 @@ Useful entry docs:
 - `Setup/jobs/<job>/drawdsl.json`
 - `Setup/jobs/<job>/reviews/`
 - `OutputPreview/<job>/round-*.png`
-- `OutputVSDX/<final>.vsdx`
+- `OutputEditable/<final>.vsdx`
 
 ## Typical workflow
 
-1. Put the reference PNG into `InputPNG/`.
+1. Put the reference PNG into `InputReference/`.
 2. Copy `draw-job.template.json` to `draw-job.local.json`.
 3. Edit the local config:
 
@@ -44,6 +44,11 @@ Useful entry docs:
 - `task.final_vsdx_name`
 - `task.goal`
 - `execution.max_rounds`
+
+The config keys keep the current Visio-oriented names for compatibility:
+
+- `task.input_png`
+- `task.final_vsdx_name`
 
 4. In the shell that can reach the Windows bridge, set:
 
@@ -79,7 +84,7 @@ Use `development` when you are still building the system itself.
 ## Final VSDX retention
 
 - `execution.keep_final_vsdx: true`
-  - save the final `.vsdx` into `OutputVSDX/` on the last configured round
+  - save the final `.vsdx` into `OutputEditable/` on the last configured round
 - `--save-final`
   - force saving the current round as the final `.vsdx`
 

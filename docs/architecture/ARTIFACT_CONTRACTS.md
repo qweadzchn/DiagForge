@@ -12,7 +12,7 @@ If `LAYER_CONTRACTS.md` answers "who decides what", this file answers "what shou
 4. `Setup/jobs/<job_name>/plan.json`
 5. `Setup/jobs/<job_name>/drawdsl.json`
 6. `OutputPreview/<job_name>/round-*.png`
-7. `OutputVSDX/<final>.vsdx`
+7. `OutputEditable/<final>.vsdx`
 8. `Setup/jobs/<job_name>/reviews/round-*.json`
 9. `agent/skills/learningskills/lessons/*.md`
 

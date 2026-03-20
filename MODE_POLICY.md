@@ -18,11 +18,11 @@ Purpose:
 
 Default writable areas:
 
-- `InputPNG/`
+- `InputReference/`
 - `Setup/draw-job.local.json`
 - `Setup/jobs/`
 - `OutputPreview/`
-- `OutputVSDX/`
+- `OutputEditable/`
 
 Frozen by default:
 

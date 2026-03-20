@@ -50,7 +50,7 @@
 
 输入：
 
-- `InputPNG/<image>`
+- `InputReference/<image>`
 - `Setup/draw-job.local.json`
 
 输出：

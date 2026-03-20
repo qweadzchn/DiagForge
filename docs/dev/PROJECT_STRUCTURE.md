@@ -121,7 +121,7 @@ Visio 原子执行层。
 - `Setup/draw-job.template.json`
 - `Setup/run_draw_job.py`
 
-### `InputPNG/`
+### `InputReference/`
 
 用户放参考图的目录。
 
@@ -135,11 +135,11 @@ Visio 原子执行层。
 
 - 它是 run-specific 产物，不是 reusable skill asset
 - 人类 review 和脚本都需要稳定、直接的输出路径
-- 它和 `OutputVSDX/`、`InputPNG/` 一起组成任务运行面的外部接口
+- 它和 `OutputEditable/`、`InputReference/` 一起组成任务运行面的外部接口
 
-### `OutputVSDX/`
+### `OutputEditable/`
 
-最终 VSDX 结果的目录。
+最终可编辑结果的目录。
 
 它同样属于交付产物层，应该和 `OutputPreview/` 并列保留在外层。
 

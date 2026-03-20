@@ -128,7 +128,7 @@ def main() -> None:
     if not input_path.is_file():
         raise SystemExit(
             "Input PNG not found. "
-            f"Expected {input_path}. Put the image under InputPNG/ and update task.input_png."
+            f"Expected {input_path}. Put the image under InputReference/ and update task.input_png."
         )
 
     _write_json_if_missing(

@@ -7,11 +7,11 @@ This file is the quickest human entry point for the repository.
 - A Windows environment that can reach Microsoft Visio
 - The Visio bridge running locally
 - A bridge token available through `VISIO_BRIDGE_TOKEN`
-- A reference image in `InputPNG/`
+- A reference image in `InputReference/`
 
 ## Quick Path
 
-1. Put the source image into `InputPNG/`.
+1. Put the source image into `InputReference/`.
 2. Copy `Setup/draw-job.template.json` to `Setup/draw-job.local.json`.
 3. Fill in the job name, input image, goal, and execution settings.
 4. Start the bridge.

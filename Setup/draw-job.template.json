@@ -10,9 +10,9 @@
     "description": "Optional extra notes."
   },
   "paths": {
-    "input_dir": "../InputPNG",
+    "input_dir": "../InputReference",
     "preview_dir": "../OutputPreview",
-    "final_vsdx_dir": "../OutputVSDX",
+    "final_vsdx_dir": "../OutputEditable",
     "workspace_root": "../Setup/jobs"
   },
   "bridge": {

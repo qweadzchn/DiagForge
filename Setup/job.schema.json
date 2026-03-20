@@ -20,11 +20,11 @@
       "properties": {
         "input_png": {
           "type": "string",
-          "description": "File name under InputPNG/"
+          "description": "File name under InputReference/"
         },
         "final_vsdx_name": {
           "type": "string",
-          "description": "Final VSDX file name under OutputVSDX/"
+          "description": "Final VSDX file name under OutputEditable/"
         },
         "goal": {
           "type": "string",
