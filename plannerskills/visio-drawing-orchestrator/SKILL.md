@@ -1,4 +1,4 @@
----
+﻿---
 name: visio-drawing-orchestrator
 description: Analyze a source figure, classify the diagram family, decompose regions and elements, and produce a drawing plan before any detailed Visio drawing begins. Use when a job starts from an input image and the agent must decide what to draw first, which drawskills to invoke, which visioskills capabilities are needed, and how round-by-round critique should be structured.
 ---
@@ -16,8 +16,8 @@ description: Analyze a source figure, classify the diagram family, decompose reg
 - `../../Setup/draw-job.local.json`
 - `../../Setup/jobs/<job_name>/run-summary.json`
 - 输入图片
-- `../../docs/LAYER_CONTRACTS.md`
-- `../../docs/ARTIFACT_CONTRACTS.md`
+- `../../docs/architecture/LAYER_CONTRACTS.md`
+- `../../docs/architecture/ARTIFACT_CONTRACTS.md`
 - 相关 lessons
 
 ## Output Contract
@@ -75,9 +75,10 @@ planner 只做“策略和结构”的决定，不做这些事：
 
 ## Read These Files As Needed
 
-- `../../docs/LAYER_CONTRACTS.md`
+- `../../docs/architecture/LAYER_CONTRACTS.md`
 - `../../Setup/analysis.schema.json`
 - `../../Setup/plan.schema.json`
 - `../../drawskills/visio-figure-builder/SKILL.md`
 - `../../learningskills/visio-iteration-journal/SKILL.md`
 - `references/planning-checklist.md`
+

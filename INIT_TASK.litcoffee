@@ -1,4 +1,4 @@
-# 任务书：DiagForge 核心执行层架构调研与实施计划
+﻿# 任务书：DiagForge 核心执行层架构调研与实施计划
 
 ## 角色设定
 你是 `DiagForge` 项目的核心开发 Agent。你的目标是构建一个健壮、可扩展的基于 Visio 的多模态排版系统。请严格遵循“先调研、后汇报、再开发”的原则。
@@ -12,7 +12,7 @@
 
 ## 架构核心目录设计
 系统需围绕以下核心目录展开，你需要在此基础上进行调研和设计：
-1. `docs/research/`（调研知识库）：存放所有高价值的技术调研结论。
+1. `docs/dev/research/`（调研知识库）：存放所有高价值的技术调研结论。
 2. `visioskills/`（原子操作库）：封装与 Visio 交互的最基础动作（如：画框、连线、改色）。这部分需要通过 MCP (Model Context Protocol) 暴露给你自己。
 3. `drawskills/`（复合技能库）：存放拓扑记忆和审美规范（如：如何画一个 ResNet 块，IEEE 论文规范配色等），供你调用组合。
 
@@ -36,7 +36,7 @@
 请按以下结构输出文档，并将调研结果固化：
 
 ### 1. 技术组件甄选与知识沉淀
-在 `docs/research/` 下创建并写入 `01_OpenSource_Components.md`，内容需包含：
+在 `docs/dev/research/` 下创建并写入 `01_OpenSource_Components.md`，内容需包含：
 - **Visio COM 操控封装库**：寻找 GitHub/PyPI 上比原生 `pywin32` 更好的 Visio 二次封装库（如果有）。对比它们的优缺点。
 - **MCP Server SDK**：调研 Anthropic 官方或其他社区成熟的基于 Python 的 MCP Server 实现。
 - **WSL-Windows 穿透方案**：重点调研 WSL2 如何获取宿主机 vEthernet IP，以及选择哪种 RPC/HTTP/SSE 机制来实现 WSL(Agent Client) 到 Windows(MCP Server) 的低延迟通信。
@@ -48,7 +48,7 @@
 - **复合技能结构**：定义 `drawskills` 的配置文件格式（强推 JSON Schema 或 YAML），并给出一个“绘制两个带箭头相连的矩形”的完整代码结构示例。
 
 ## 交付与纪律规范
-1. 生成并保存 `docs/research/01_OpenSource_Components.md`。
+1. 生成并保存 `docs/dev/research/01_OpenSource_Components.md`。
 2. 输出《阶段一技术实施方案》供主管 Review。
 3. **红线纪律**：在主管明确回复“方案通过，开始开发”之前，**绝不允许**编写任何 Visio 操控代码、MCP Server 代码，或胡乱创建上述定义之外的文件目录。
 4. 等待主管的下一步指令。
@@ -58,3 +58,4 @@
 1. 阅读本阶段任务后，生成一份详细的《技术实施方案》。
 2. **在主管明确回复“方案通过，开始开发”之前，绝不要编写核心业务代码或创建复杂项目结构。**
 3. 等待主管指令。 -->
+

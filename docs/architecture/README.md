@@ -1,15 +1,25 @@
-# architecture
+# Architecture Docs
 
-这里放项目的核心设计文档。
+This section contains the repository's cross-layer design documents and contracts.
 
-建议阅读顺序：
+## Core Contracts
 
-1. `00_DECISIONS_TO_CONFIRM.md`
-2. `01_WSL_WINDOWS_VISIO_CONNECTIVITY_PLAN.md`
-3. `02_SYSTEM_ARCHITECTURE_FULL_DESIGN.md`
+- [LAYER_CONTRACTS.md](LAYER_CONTRACTS.md)
+  - who decides what
+- [ARTIFACT_CONTRACTS.md](ARTIFACT_CONTRACTS.md)
+  - what each standard file should express
+- [PLAN_TO_OPERATION_LOOP.md](PLAN_TO_OPERATION_LOOP.md)
+  - how intent becomes execution and review
 
-这三份文档分别回答：
+## System Design Notes
 
-- 先拍哪些关键板
-- 最小链路怎么验通
-- 整个系统最终要长成什么样
+- [00_DECISIONS_TO_CONFIRM.md](00_DECISIONS_TO_CONFIRM.md)
+- [01_WSL_WINDOWS_VISIO_CONNECTIVITY_PLAN.md](01_WSL_WINDOWS_VISIO_CONNECTIVITY_PLAN.md)
+- [02_SYSTEM_ARCHITECTURE_FULL_DESIGN.md](02_SYSTEM_ARCHITECTURE_FULL_DESIGN.md)
+
+## Suggested Read Order
+
+1. [LAYER_CONTRACTS.md](LAYER_CONTRACTS.md)
+2. [ARTIFACT_CONTRACTS.md](ARTIFACT_CONTRACTS.md)
+3. [PLAN_TO_OPERATION_LOOP.md](PLAN_TO_OPERATION_LOOP.md)
+4. The design-note documents as needed

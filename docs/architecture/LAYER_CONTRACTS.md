@@ -1,10 +1,10 @@
-# LAYER_CONTRACTS
+﻿# LAYER_CONTRACTS
 
 这个文件定义 DiagForge 各层的输入、输出、职责边界和禁止行为。
 
 目标只有一个：让 agent 一进入仓库，就知道自己当前应该在哪一层做决定。
 
-配套的产物定义见 `docs/ARTIFACT_CONTRACTS.md`。
+配套的产物定义见 `docs/architecture/ARTIFACT_CONTRACTS.md`。
 
 ## 总流程
 
@@ -183,3 +183,4 @@
 - 文字方向改变时，框和邻近间距必须重算
 - 任何两个图元默认不能重叠
 - 线条样式要有语义，而不是统一一种线
+

@@ -1,0 +1,92 @@
+{
+  "project": "DiagForge",
+  "manifest_version": "1.0",
+  "status": "experimental",
+  "default_backend": "visio",
+  "entrypoints": {
+    "human": "GET_STARTED.md",
+    "agent": "AGENT_START_HERE.md",
+    "development": "DEVELOPMENT.md",
+    "mode_policy": "MODE_POLICY.md",
+    "detailed_agent_guide": "AGENT_GUIDE.md",
+    "setup": "Setup/README.md"
+  },
+  "docs": {
+    "index": "docs/README.md",
+    "architecture": [
+      "docs/architecture/README.md",
+      "docs/architecture/LAYER_CONTRACTS.md",
+      "docs/architecture/ARTIFACT_CONTRACTS.md",
+      "docs/architecture/PLAN_TO_OPERATION_LOOP.md"
+    ],
+    "human": [
+      "docs/human/README.md",
+      "docs/human/PREVIEW_REVIEW_CHECKLIST.md",
+      "docs/human/setup/WINDOWS_BRIDGE_DEPLOY.md",
+      "docs/human/setup/SMOKE_TEST_FROM_WSL.md"
+    ],
+    "development": [
+      "docs/dev/README.md",
+      "docs/dev/PROJECT_STRUCTURE.md",
+      "docs/dev/DEVELOPMENT_PLAN_STAGE1.md"
+    ]
+  },
+  "modes": {
+    "operation": {
+      "intent": "run or review a job without changing shared repo behavior by default",
+      "recommended_write_scope": "job_only",
+      "writable_paths": [
+        "InputPNG/**",
+        "Setup/draw-job.local.json",
+        "Setup/jobs/**",
+        "OutputPreview/**",
+        "OutputVSDX/**"
+      ],
+      "frozen_by_default": [
+        "plannerskills/**",
+        "drawskills/**",
+        "visioskills/**",
+        "learningskills/**",
+        "docs/**",
+        "Setup/*.py",
+        "Setup/*.schema.json",
+        "Setup/draw-job.template.json"
+      ]
+    },
+    "development": {
+      "intent": "allow repo-level improvements when the blocker is structural",
+      "recommended_write_scope": "repo_and_job",
+      "writable_paths": [
+        "InputPNG/**",
+        "Setup/**",
+        "plannerskills/**",
+        "drawskills/**",
+        "visioskills/**",
+        "learningskills/**",
+        "docs/**",
+        "OutputPreview/**",
+        "OutputVSDX/**"
+      ]
+    }
+  },
+  "agent_requirements": {
+    "required_capabilities": [
+      "read_local_files",
+      "write_local_files",
+      "run_shell_commands",
+      "inspect_preview_images",
+      "call_local_http_bridge"
+    ],
+    "optional_capabilities": [
+      "git",
+      "json_validation",
+      "python_syntax_check"
+    ]
+  },
+  "skills": {
+    "planning": "plannerskills/",
+    "drawing": "drawskills/",
+    "execution": "visioskills/",
+    "learning": "learningskills/"
+  }
+}

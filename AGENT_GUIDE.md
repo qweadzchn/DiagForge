@@ -1,6 +1,8 @@
 # AGENT_GUIDE
 
-This is the main entry point for any agent working in this repository.
+This is the detailed operating guide for agents already entering the repository.
+
+If you are starting cold, read [AGENT_START_HERE.md](AGENT_START_HERE.md) first.
 
 The goal is not "call a few Visio APIs".
 The goal is "understand what to draw, why it should look that way, which controls are needed, how to verify the result, and how to improve the next round".
@@ -18,8 +20,8 @@ Do not collapse these layers into one giant prompt.
 ## Read order for a new job
 
 1. `Setup/draw-job.local.json`
-2. `docs/LAYER_CONTRACTS.md`
-3. `docs/ARTIFACT_CONTRACTS.md`
+2. `docs/architecture/LAYER_CONTRACTS.md`
+3. `docs/architecture/ARTIFACT_CONTRACTS.md`
 4. The relevant `SKILL.md`
 5. The current job artifacts in `Setup/jobs/<job_name>/`
 
@@ -112,10 +114,10 @@ In `operation` mode, the agent should mostly stay inside the job workspace and o
 
 ## Key files
 
-- `docs/LAYER_CONTRACTS.md`
-- `docs/ARTIFACT_CONTRACTS.md`
-- `docs/PLAN_TO_OPERATION_LOOP.md`
-- `docs/PREVIEW_REVIEW_CHECKLIST.md`
+- `docs/architecture/LAYER_CONTRACTS.md`
+- `docs/architecture/ARTIFACT_CONTRACTS.md`
+- `docs/architecture/PLAN_TO_OPERATION_LOOP.md`
+- `docs/human/PREVIEW_REVIEW_CHECKLIST.md`
 - `Setup/analysis.schema.json`
 - `Setup/plan.schema.json`
 - `Setup/round-review.schema.json`

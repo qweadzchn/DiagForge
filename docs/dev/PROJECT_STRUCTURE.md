@@ -1,4 +1,4 @@
-# PROJECT_STRUCTURE
+﻿# PROJECT_STRUCTURE
 
 ## 顶层目录
 
@@ -149,9 +149,10 @@ Visio 原子执行层。
 
 1. `README.md`
 2. `Setup/README.md`
-3. `docs/LAYER_CONTRACTS.md`
-4. `docs/ARTIFACT_CONTRACTS.md`
+3. `docs/architecture/LAYER_CONTRACTS.md`
+4. `docs/architecture/ARTIFACT_CONTRACTS.md`
 5. `AGENT_GUIDE.md`
-6. `docs/setup/WINDOWS_BRIDGE_DEPLOY.md`
-7. `docs/setup/SMOKE_TEST_FROM_WSL.md`
+6. `docs/human/setup/WINDOWS_BRIDGE_DEPLOY.md`
+7. `docs/human/setup/SMOKE_TEST_FROM_WSL.md`
 8. `docs/architecture/`
+

@@ -1,4 +1,4 @@
----
+﻿---
 name: visio-iteration-journal
 description: Distill reusable lessons from Visio drawing iterations in DiagForge. Use when an agent encounters a drawing problem, layout failure, export surprise, bridge recovery issue, or any repeatable obstacle during Visio work and should convert that one-off fix into a generalized lesson stored under learningskills.
 ---
@@ -11,8 +11,8 @@ description: Distill reusable lessons from Visio drawing iterations in DiagForge
 
 优先读取：
 
-- `../../docs/LAYER_CONTRACTS.md`
-- `../../docs/ARTIFACT_CONTRACTS.md`
+- `../../docs/architecture/LAYER_CONTRACTS.md`
+- `../../docs/architecture/ARTIFACT_CONTRACTS.md`
 - `../templates/lesson-template.md`
 - `../../Setup/jobs/<job_name>/reviews/round-*.json`
 - 导出预览 PNG
@@ -57,5 +57,6 @@ lesson 必须写成 generalized knowledge，不写成一次任务的流水账。
 
 - `../templates/lesson-template.md`
 - `../../AGENT_GUIDE.md`
-- `../../docs/LAYER_CONTRACTS.md`
+- `../../docs/architecture/LAYER_CONTRACTS.md`
 - `../../drawskills/visio-figure-builder/references/layout-iteration-notes.md`
+

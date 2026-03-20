@@ -11,6 +11,12 @@ Its job is to answer:
 
 It should not decide the diagram layout or directly operate Visio.
 
+Useful entry docs:
+
+- [../GET_STARTED.md](../GET_STARTED.md)
+- [../MODE_POLICY.md](../MODE_POLICY.md)
+- [../AGENT_START_HERE.md](../AGENT_START_HERE.md)
+
 ## Files you edit manually
 
 - `InputPNG/<image>.png`

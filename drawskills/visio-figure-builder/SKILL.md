@@ -1,4 +1,4 @@
----
+﻿---
 name: visio-figure-builder
 description: Build publication-style figures in Microsoft Visio through the DiagForge bridge after a planner has already analyzed the source figure and produced a plan. Use when the agent needs to translate a drawing plan into layout, typography, spacing, line-style semantics, and DrawDSL, especially for research figures.
 ---
@@ -11,9 +11,9 @@ description: Build publication-style figures in Microsoft Visio through the Diag
 
 ## Preflight (mandatory)
 
-1. Read `../../docs/LAYER_CONTRACTS.md`
+1. Read `../../docs/architecture/LAYER_CONTRACTS.md`
 2. Read `../../AGENT_GUIDE.md`
-3. Read `../../docs/ARTIFACT_CONTRACTS.md`
+3. Read `../../docs/architecture/ARTIFACT_CONTRACTS.md`
 4. If `../../Setup/draw-job.local.json` exists, treat its `execution` block as the source of truth for round limits, preview export, cleanup, and final-output behavior.
 
 ## Input Contract
@@ -81,3 +81,4 @@ description: Build publication-style figures in Microsoft Visio through the Diag
   - `references/text-layout-coupling.md`
 - For connector and line-style semantics, read:
   - `references/line-style-semantics.md`
+

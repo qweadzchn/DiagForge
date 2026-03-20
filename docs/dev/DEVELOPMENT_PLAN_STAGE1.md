@@ -1,4 +1,4 @@
-# DiagForge 开发文档（阶段一）
+﻿# DiagForge 开发文档（阶段一）
 
 更新时间：2026-03-16 UTC
 
@@ -25,11 +25,11 @@
   - 需定义：跨系统方案、visioskills API、drawskills 格式、Git 工作流
 - `INIT_TASK.litcoffee`
   - 新增要求：必须优先做开源组件调研（禁止重复造轮子）
-  - 新增目录：`docs/research/`
-  - 新增交付：`docs/research/01_OpenSource_Components.md`
+  - 新增目录：`docs/dev/research/`
+  - 新增交付：`docs/dev/research/01_OpenSource_Components.md`
 
 ### 1.2 已有调研文档
-- `docs/research/01_OpenSource_Components.md`
+- `docs/dev/research/01_OpenSource_Components.md`
   - 已筛选 MCP SDK、Visio 相关样例、WSL 网络文档、图 DSL 生态
   - 结论：`pywin32 + Windows Bridge + MCP Python SDK` 是当前最现实主线
 - `docs/architecture/00_DECISIONS_TO_CONFIRM.md`
@@ -189,3 +189,4 @@ C. MVP 范围
 - **是否可开发：可以。**
 - **是否有希望做成科研可用：有，但必须走“稳定执行内核 + 结构化技能 + 回归沉淀”路线。**
 - **当前最缺的不是写代码速度，而是规格冻结与验收门槛。**
+
