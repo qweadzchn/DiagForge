@@ -1,0 +1,35 @@
+{
+  "$schema": "../job.schema.json",
+  "run_mode": "operation",
+  "job_name": "smoke-inputpng-1",
+  "smoke_test": {
+    "source_job": "inputpng-1"
+  },
+  "task": {
+    "input_png": "1.png",
+    "final_vsdx_name": "1_smoke_test_final.vsdx",
+    "goal": "Run the canonical DiagForge cold-start smoke test against the benchmark figure InputReference/1.png and confirm that preflight, execution, preview export, and final VSDX saving all work.",
+    "diagram_hint": "mixed_layout",
+    "description": "Canonical first-agent smoke test config. The runtime workspace is copied from the tracked inputpng-1 benchmark artifacts into .runtime/smoke-jobs/."
+  },
+  "paths": {
+    "input_dir": "../../InputReference",
+    "preview_dir": "../../OutputPreview",
+    "final_vsdx_dir": "../../OutputEditable",
+    "workspace_root": "../../.runtime/smoke-jobs"
+  },
+  "bridge": {
+    "base_url": "http://127.0.0.1:18761",
+    "token_env": "VISIO_BRIDGE_TOKEN"
+  },
+  "execution": {
+    "max_rounds": 1,
+    "stop_when_satisfied": true,
+    "save_intermediate_vsdx": false,
+    "export_preview_each_round": true,
+    "write_round_review_each_round": true,
+    "clear_session_after_round": true,
+    "record_lessons_each_round": false,
+    "keep_final_vsdx": true
+  }
+}

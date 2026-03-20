@@ -18,6 +18,7 @@ The repository is for building the workflow, contracts, and reusable skills arou
 
 - New to the project: [GET_STARTED.md](GET_STARTED.md)
 - Running a drawing job: [Setup/README.md](Setup/README.md)
+- Validating a fresh agent or environment: [docs/human/setup/AGENT_COLD_START_SMOKE_TEST.md](docs/human/setup/AGENT_COLD_START_SMOKE_TEST.md)
 - Onboarding an agent: [AGENT_START_HERE.md](AGENT_START_HERE.md)
 - Agent asset index: [agent/README.md](agent/README.md)
 - Working on the system itself: [DEVELOPMENT.md](DEVELOPMENT.md)
@@ -85,6 +86,16 @@ Still incomplete:
 - Architecture and contracts: [docs/architecture/README.md](docs/architecture/README.md)
 - Human-facing operational docs: [docs/human/README.md](docs/human/README.md)
 - Development docs: [docs/dev/README.md](docs/dev/README.md)
+
+## Early-stage contribution model
+
+DiagForge is still early, so evidence-backed agent feedback is useful.
+The repository now routes that feedback explicitly:
+
+- round-specific findings stay in job reviews
+- structural but still-hypothetical ideas go to `docs/dev/proposals/`
+- validated reusable patterns become lessons
+- mature defaults move into shared skills, scripts, schemas, or contracts
 
 ## License
 

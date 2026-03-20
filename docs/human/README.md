@@ -6,6 +6,8 @@ This section contains operational documentation for people running or reviewing 
 
 - [PREVIEW_REVIEW_CHECKLIST.md](PREVIEW_REVIEW_CHECKLIST.md)
   - checklist for comparing previews against target figures
+- [setup/AGENT_COLD_START_SMOKE_TEST.md](setup/AGENT_COLD_START_SMOKE_TEST.md)
+  - canonical first-run validation path for a newly arrived agent
 - [setup/WINDOWS_BRIDGE_DEPLOY.md](setup/WINDOWS_BRIDGE_DEPLOY.md)
   - bridge deployment notes
 - [setup/SMOKE_TEST_FROM_WSL.md](setup/SMOKE_TEST_FROM_WSL.md)

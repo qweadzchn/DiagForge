@@ -4,6 +4,8 @@ This section contains development-facing documentation for people changing the r
 
 ## Files
 
+- [proposals/README.md](proposals/README.md)
+  - where early structural ideas from agents and developers are stored and evaluated
 - [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
   - directory responsibilities and reading order
 - [DEVELOPMENT_PLAN_STAGE1.md](DEVELOPMENT_PLAN_STAGE1.md)

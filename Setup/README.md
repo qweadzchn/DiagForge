@@ -16,6 +16,7 @@ Useful entry docs:
 - [../GET_STARTED.md](../GET_STARTED.md)
 - [../MODE_POLICY.md](../MODE_POLICY.md)
 - [../AGENT_START_HERE.md](../AGENT_START_HERE.md)
+- [../docs/human/setup/AGENT_COLD_START_SMOKE_TEST.md](../docs/human/setup/AGENT_COLD_START_SMOKE_TEST.md)
 
 ## Files you edit manually
 
@@ -70,6 +71,18 @@ This preflight will fail fast if:
 
 It also creates the standard job workspace.
 
+## Canonical smoke test
+
+For a fresh environment or a newly arrived agent, use the benchmark smoke test before open-ended job work:
+
+```powershell
+python Setup\prepare_smoke_test.py --config Setup\examples\smoke-test-inputpng-1.json
+python Setup\run_draw_job.py --config Setup\examples\smoke-test-inputpng-1.json
+python Setup\execute_drawdsl.py --config Setup\examples\smoke-test-inputpng-1.json --round 1 --save-final
+```
+
+This uses a disposable runtime workspace instead of mutating the tracked benchmark workspace.
+
 ## Development mode vs operation mode
 
 `run_mode` can be:
@@ -97,5 +110,11 @@ That means:
 1. export a preview
 2. write a round review
 3. feed the important review findings back into the next round plan
+
+When relevant, the round review should also capture:
+
+- execution friction the agent hit
+- missing capabilities or controls
+- proposal candidates that seem structural but are not yet proven enough to become lessons
 
 If a round is rerun without solving a prior issue or learning something new, it is not progress.

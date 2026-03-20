@@ -14,7 +14,8 @@ If `LAYER_CONTRACTS.md` answers "who decides what", this file answers "what shou
 6. `OutputPreview/<job_name>/round-*.png`
 7. `OutputEditable/<final>.vsdx`
 8. `Setup/jobs/<job_name>/reviews/round-*.json`
-9. `agent/skills/learningskills/lessons/*.md`
+9. optional `docs/dev/proposals/*.md`
+10. `agent/skills/learningskills/lessons/*.md`
 
 Do not skip the middle artifacts and hide all logic inside one script.
 
@@ -144,7 +145,31 @@ Answers:
 
 This is round memory, not the long-term knowledge base.
 
-## 9. `agent/skills/learningskills/lessons/*.md`
+Useful optional fields include:
+
+- execution friction
+- missing capabilities
+- proposal candidates
+
+These help the next agent understand not only what looked wrong, but why the work was hard.
+
+## 9. `docs/dev/proposals/*.md`
+
+Owner: development-mode repo work
+
+Purpose:
+- capture structural ideas that are promising but not yet proven enough to become reusable lessons or default behavior
+
+Good proposal inputs:
+
+- repeated friction across jobs
+- missing operations or abstractions
+- review blind spots
+- layer ownership confusion
+
+This is the hypothesis zone between raw reviews and validated lessons.
+
+## 10. `agent/skills/learningskills/lessons/*.md`
 
 Owner: `learningskills`
 
@@ -160,6 +185,7 @@ Only reusable knowledge belongs here.
 When you observe something:
 
 - if it is only about this round, keep it in `reviews/round-*.json`
+- if it looks structural but is still a hypothesis, write a proposal
 - if it may generalize but is not proven yet, keep it in review and watch another case
 - if it generalizes cleanly, write a lesson
 - if it is now a default rule, update the corresponding skill, reference, schema, or execution path

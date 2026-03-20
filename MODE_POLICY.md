@@ -34,6 +34,7 @@ Frozen by default:
 - shared scripts and schemas under `Setup/`
 
 Use this mode when the task is mainly about completing the current job.
+Cross-job suggestions should usually stay inside the current round review unless a human explicitly asks for repo-level follow-up.
 
 ### `development`
 
@@ -53,6 +54,8 @@ Writable areas:
 - schemas and contracts
 
 Use this mode when the problem cannot be solved cleanly inside one job workspace.
+
+In this mode, evidence-backed proposals under `docs/dev/proposals/` are allowed and encouraged.
 
 ## Recommended Write Scopes
 
@@ -78,8 +81,20 @@ Change:
 When a finding generalizes:
 
 - keep it in `reviews/` if it is still round-specific
+- keep it in `docs/dev/proposals/` if it looks structural but still needs validation
 - promote it to `agent/skills/learningskills/` if it is reusable
 - update `agent/skills/plannerskills/`, `agent/skills/drawskills/`, `agent/skills/visioskills/`, `Setup/`, or docs only if it should become a default repo behavior
+
+## Feedback Routing Shortcut
+
+Use this simple routing rule:
+
+1. Raw observation from this round -> `reviews/`
+2. Structural idea not proven enough yet -> `docs/dev/proposals/`
+3. Proven reusable pattern -> `learningskills/`
+4. Mature default behavior -> repo code, skills, schema, or contracts
+
+This keeps the repo open to agent suggestions without turning shared skills into an unfiltered idea dump.
 
 ## Decision Shortcut
 

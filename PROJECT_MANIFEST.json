@@ -17,18 +17,21 @@
       "docs/architecture/README.md",
       "docs/architecture/LAYER_CONTRACTS.md",
       "docs/architecture/ARTIFACT_CONTRACTS.md",
-      "docs/architecture/PLAN_TO_OPERATION_LOOP.md"
+      "docs/architecture/PLAN_TO_OPERATION_LOOP.md",
+      "docs/architecture/FEEDBACK_PROMOTION_LOOP.md"
     ],
     "human": [
       "docs/human/README.md",
       "docs/human/PREVIEW_REVIEW_CHECKLIST.md",
+      "docs/human/setup/AGENT_COLD_START_SMOKE_TEST.md",
       "docs/human/setup/WINDOWS_BRIDGE_DEPLOY.md",
       "docs/human/setup/SMOKE_TEST_FROM_WSL.md"
     ],
     "development": [
       "docs/dev/README.md",
       "docs/dev/PROJECT_STRUCTURE.md",
-      "docs/dev/DEVELOPMENT_PLAN_STAGE1.md"
+      "docs/dev/DEVELOPMENT_PLAN_STAGE1.md",
+      "docs/dev/proposals/README.md"
     ]
   },
   "modes": {
@@ -88,5 +91,31 @@
     "drawing": "agent/skills/drawskills/",
     "execution": "agent/skills/visioskills/",
     "learning": "agent/skills/learningskills/"
+  },
+  "cold_start_protocol": {
+    "read_order": [
+      "PROJECT_MANIFEST.json",
+      "MODE_POLICY.md",
+      "AGENT_START_HERE.md",
+      "AGENT_GUIDE.md",
+      "Setup/README.md"
+    ],
+    "first_action": "run preflight before major drawing work",
+    "blocker_routing": {
+      "planning_or_priority": "agent/skills/plannerskills/",
+      "layout_or_spacing": "agent/skills/drawskills/",
+      "visio_operation_or_control": "agent/skills/visioskills/",
+      "reusable_memory_or_lesson_promotion": "agent/skills/learningskills/"
+    }
+  },
+  "improvement_loop": {
+    "round_memory": "Setup/jobs/<job>/reviews/round-*.json",
+    "proposal_hypotheses": "docs/dev/proposals/*.md",
+    "validated_lessons": "agent/skills/learningskills/lessons/*.md",
+    "default_behavior_targets": [
+      "agent/skills/**",
+      "Setup/**",
+      "docs/**"
+    ]
   }
 }

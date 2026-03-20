@@ -21,6 +21,15 @@ This file is the quickest human entry point for the repository.
 python Setup\run_draw_job.py --config Setup\draw-job.local.json
 ```
 
+## First-time Agent Validation
+
+If you are onboarding a newly arrived agent or validating a fresh environment, run the canonical smoke test first:
+
+- guide:
+  [docs/human/setup/AGENT_COLD_START_SMOKE_TEST.md](docs/human/setup/AGENT_COLD_START_SMOKE_TEST.md)
+- example config:
+  `Setup/examples/smoke-test-inputpng-1.json`
+
 ## Where To Go Next
 
 - Running a job: [Setup/README.md](Setup/README.md)

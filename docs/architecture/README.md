@@ -10,6 +10,8 @@ This section contains the repository's cross-layer design documents and contract
   - what each standard file should express
 - [PLAN_TO_OPERATION_LOOP.md](PLAN_TO_OPERATION_LOOP.md)
   - how intent becomes execution and review
+- [FEEDBACK_PROMOTION_LOOP.md](FEEDBACK_PROMOTION_LOOP.md)
+  - how job feedback becomes proposals, lessons, and default behavior
 
 ## System Design Notes
 
@@ -22,4 +24,5 @@ This section contains the repository's cross-layer design documents and contract
 1. [LAYER_CONTRACTS.md](LAYER_CONTRACTS.md)
 2. [ARTIFACT_CONTRACTS.md](ARTIFACT_CONTRACTS.md)
 3. [PLAN_TO_OPERATION_LOOP.md](PLAN_TO_OPERATION_LOOP.md)
-4. The design-note documents as needed
+4. [FEEDBACK_PROMOTION_LOOP.md](FEEDBACK_PROMOTION_LOOP.md)
+5. The design-note documents as needed

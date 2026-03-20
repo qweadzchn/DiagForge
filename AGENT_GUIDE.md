@@ -35,8 +35,21 @@ Do not collapse these layers into one giant prompt.
 4. Produce or update `drawdsl.json`.
 5. Execute in Visio.
 6. Export preview PNG.
-7. Write `round-review.json`.
-8. Promote reusable findings into `learningskills`.
+7. Write `round-review.json`, including friction and structural gaps when present.
+8. If the idea is structural but not fully proven, write a proposal under `docs/dev/proposals/`.
+9. Promote reusable validated findings into `learningskills`.
+
+## First-time agent stance
+
+If you are the first agent touching a job, do not assume the repo is wrong and do not assume it is complete.
+Work from evidence:
+
+- preflight first
+- inspect the current workspace
+- localize the blocker to the correct layer
+- leave artifacts that let the next agent continue without guesswork
+
+The goal is to make the repository easier for the next agent, not only to finish one run.
 
 ## The closed-loop rule
 
@@ -83,6 +96,31 @@ It means:
 4. The next round preserves what already improved.
 5. If a rerun does not solve a prior issue or add useful new information, it is not progress.
 
+## Feedback and proposal loop
+
+In this repository, agent feedback is a feature, especially in `development` mode.
+But feedback should be routed cleanly:
+
+- raw round memory:
+  `Setup/jobs/<job_name>/reviews/round-*.json`
+- still-hypothetical cross-job improvement:
+  `docs/dev/proposals/*.md`
+- validated reusable rule:
+  `agent/skills/learningskills/lessons/*.md`
+- default repo behavior:
+  the owning skill, bridge code, schema, script, or contract
+
+Useful feedback includes:
+
+- controls the agent expected but could not find
+- repeated operator friction
+- review blind spots
+- layer boundary confusion
+- missing abstractions that made a good plan hard to execute
+
+Do not turn every opinion into a lesson.
+Do not leave structural ideas only as one-off review notes if they are likely to matter again.
+
 ## When to change the repo
 
 In `development` mode, the agent may change:
@@ -119,6 +157,7 @@ In `operation` mode, the agent should mostly stay inside the job workspace and o
 - `docs/architecture/LAYER_CONTRACTS.md`
 - `docs/architecture/ARTIFACT_CONTRACTS.md`
 - `docs/architecture/PLAN_TO_OPERATION_LOOP.md`
+- `docs/architecture/FEEDBACK_PROMOTION_LOOP.md`
 - `docs/human/PREVIEW_REVIEW_CHECKLIST.md`
 - `Setup/analysis.schema.json`
 - `Setup/plan.schema.json`

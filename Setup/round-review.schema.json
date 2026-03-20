@@ -56,6 +56,21 @@
       "type": "array",
       "items": { "type": "string" }
     },
+    "operation_friction": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Execution or workflow friction encountered during this round."
+    },
+    "capability_gaps": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Missing controls, abstractions, or contracts that made the round harder than it should have been."
+    },
+    "proposal_candidates": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Ideas that look structural but still need validation before becoming lessons or defaults."
+    },
     "next_actions": {
       "type": "array",
       "items": { "type": "string" }
