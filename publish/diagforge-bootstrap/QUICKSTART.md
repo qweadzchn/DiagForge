@@ -15,13 +15,13 @@ Do not upload the whole DiagForge repository.
 - Display name:
   `DiagForge Bootstrap`
 - Version:
-  `0.1.0`
+  `0.1.2`
 - Tags:
   `latest`
 
 ## Suggested changelog
 
-`Initial release. Bootstrap skill for guiding agents to the DiagForge GitHub repository and canonical cold-start smoke test.`
+`Refined bootstrap guidance and clarified local Visio bridge token usage.`
 
 ## Token clarification
 

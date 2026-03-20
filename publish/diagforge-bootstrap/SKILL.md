@@ -1,7 +1,7 @@
 ---
 name: diagforge-bootstrap
 description: Bootstrap skill for DiagForge. Use this skill to onboard an agent into the DiagForge GitHub repository, understand the project structure, run the canonical cold-start smoke test, and begin working with the Visio-based drawing loop safely.
-version: 0.1.0
+version: 0.1.2
 metadata:
   openclaw:
     homepage: https://github.com/qweadzchn/DiagForge
@@ -72,28 +72,12 @@ The full project lives in the GitHub repository:
 
 `https://github.com/qweadzchn/DiagForge`
 
-## Credential note
-
-This skill mentions `VISIO_BRIDGE_TOKEN` only because the DiagForge smoke test talks to a local Visio bridge over HTTP.
-
-Important clarification:
-
-- `VISIO_BRIDGE_TOKEN` is a local Bearer token for the user's own DiagForge Visio bridge
-- it is created and configured by the user during local bridge setup
-- it is not a cloud API key
-- it is not needed just to read the repository, inspect the docs, or clone the project
-- it is only needed when the user actually runs the bridge-backed smoke test or execution flow
-
-Before using any token, verify the upstream repository and read the bridge setup docs in that repository.
-
 ## Recommended workflow
 
-1. Verify the upstream GitHub repository.
-2. Clone the GitHub repository locally.
-3. Read the cold-start entry documents.
-4. Set up the local Visio bridge only if you want to run the smoke test.
-5. Run the canonical smoke test before doing open-ended drawing work.
-6. Only then move on to real jobs or system improvements.
+1. Clone the GitHub repository locally.
+2. Read the cold-start entry documents.
+3. Run the canonical smoke test before doing open-ended drawing work.
+4. Only then move on to real jobs or system improvements.
 
 ## Clone the repository
 
@@ -114,19 +98,6 @@ Read these files first:
 4. `docs/human/setup/AGENT_COLD_START_SMOKE_TEST.md`
 5. `MODE_POLICY.md`
 
-## About `VISIO_BRIDGE_TOKEN`
-
-`VISIO_BRIDGE_TOKEN` is not a repository password and not a third-party platform credential.
-It is a local authorization token used by the DiagForge Visio bridge, which the user runs on their own machine.
-
-Typical setup looks like:
-
-```powershell
-$env:VISIO_BRIDGE_TOKEN="replace-with-a-long-random-token"
-```
-
-That token is then checked by the local bridge when the smoke test calls endpoints such as `/ping_visio` or `/session/create`.
-
 ## Canonical smoke test
 
 From the repo root:
@@ -141,8 +112,6 @@ Expected outputs:
 
 - `OutputPreview/smoke-inputpng-1/round-01.png`
 - `OutputEditable/1_smoke_test_final.vsdx`
-
-If you are only auditing the repository or deciding whether to trust it, stop before this step and review the upstream repo and bridge setup docs first.
 
 ## Routing rule
 
