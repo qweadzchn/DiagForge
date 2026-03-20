@@ -15,7 +15,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from drawskills.layout_postprocess import (
+from agent.skills.drawskills.layout_postprocess import (
     apply_layout_postprocess,
     estimate_text_box as _layout_estimate_text_box,
     expected_text_angle_deg,

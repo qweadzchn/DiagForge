@@ -11,17 +11,17 @@ description: Build publication-style figures in Microsoft Visio through the Diag
 
 ## Preflight (mandatory)
 
-1. Read `../../docs/architecture/LAYER_CONTRACTS.md`
-2. Read `../../AGENT_GUIDE.md`
-3. Read `../../docs/architecture/ARTIFACT_CONTRACTS.md`
-4. If `../../Setup/draw-job.local.json` exists, treat its `execution` block as the source of truth for round limits, preview export, cleanup, and final-output behavior.
+1. Read `../../../../docs/architecture/LAYER_CONTRACTS.md`
+2. Read `../../../../AGENT_GUIDE.md`
+3. Read `../../../../docs/architecture/ARTIFACT_CONTRACTS.md`
+4. If `../../../../Setup/draw-job.local.json` exists, treat its `execution` block as the source of truth for round limits, preview export, cleanup, and final-output behavior.
 
 ## Input Contract
 
 优先消费：
 
-- `../../Setup/jobs/<job_name>/analysis.json`
-- `../../Setup/jobs/<job_name>/plan.json`
+- `../../../../Setup/jobs/<job_name>/analysis.json`
+- `../../../../Setup/jobs/<job_name>/plan.json`
 - relevant lessons
 
 这个 skill 应该把“planner 已经想清楚的结构”变成 DrawDSL，而不是自己重新做总体任务规划。
@@ -30,7 +30,7 @@ description: Build publication-style figures in Microsoft Visio through the Diag
 
 这个 skill 的核心产物是：
 
-- `../../Setup/jobs/<job_name>/drawdsl.json`
+- `../../../../Setup/jobs/<job_name>/drawdsl.json`
 
 这个文件应该表达“要画什么”，不应该携带 bridge 地址、token、session id 之类的运行态信息。
 

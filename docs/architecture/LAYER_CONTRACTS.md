@@ -1,4 +1,4 @@
-﻿# LAYER_CONTRACTS
+# LAYER_CONTRACTS
 
 这个文件定义 DiagForge 各层的输入、输出、职责边界和禁止行为。
 
@@ -28,7 +28,7 @@
 
 ## 后端扩展原则
 
-当前默认后端是 Microsoft Visio，所以执行层目录是 `visioskills/`。
+当前默认后端是 Microsoft Visio，所以执行层目录是 `agent/skills/visioskills/`。
 
 以后如果要支持其他工业图表软件，例如 Draw.io，原则上应该新增平行的后端执行层，例如 `drawioskills/`，而不是把上层重新写一遍。
 
@@ -157,7 +157,7 @@
 
 输出：
 
-- `learningskills/lessons/*.md`
+- `agent/skills/learningskills/lessons/*.md`
 - 对 planner/draw/visio 的回写建议
 
 禁止：

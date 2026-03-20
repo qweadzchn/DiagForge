@@ -26,10 +26,10 @@ Default writable areas:
 
 Frozen by default:
 
-- `plannerskills/`
-- `drawskills/`
-- `visioskills/`
-- `learningskills/`
+- `agent/skills/plannerskills/`
+- `agent/skills/drawskills/`
+- `agent/skills/visioskills/`
+- `agent/skills/learningskills/`
 - `docs/`
 - shared scripts and schemas under `Setup/`
 
@@ -78,8 +78,8 @@ Change:
 When a finding generalizes:
 
 - keep it in `reviews/` if it is still round-specific
-- promote it to `learningskills/` if it is reusable
-- update `plannerskills/`, `drawskills/`, `visioskills/`, `Setup/`, or docs only if it should become a default repo behavior
+- promote it to `agent/skills/learningskills/` if it is reusable
+- update `agent/skills/plannerskills/`, `agent/skills/drawskills/`, `agent/skills/visioskills/`, `Setup/`, or docs only if it should become a default repo behavior
 
 ## Decision Shortcut
 

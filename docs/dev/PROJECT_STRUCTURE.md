@@ -1,8 +1,8 @@
-﻿# PROJECT_STRUCTURE
+# PROJECT_STRUCTURE
 
 ## 顶层目录
 
-### `plannerskills/`
+### `agent/skills/plannerskills/`
 
 总控规划层。
 
@@ -19,10 +19,10 @@
 
 入口文件：
 
-- `plannerskills/README.md`
-- `plannerskills/visio-drawing-orchestrator/SKILL.md`
+- `agent/skills/plannerskills/README.md`
+- `agent/skills/plannerskills/visio-drawing-orchestrator/SKILL.md`
 
-### `drawskills/`
+### `agent/skills/drawskills/`
 
 复合绘图层。
 
@@ -41,10 +41,10 @@
 
 入口文件：
 
-- `drawskills/README.md`
-- `drawskills/visio-figure-builder/SKILL.md`
+- `agent/skills/drawskills/README.md`
+- `agent/skills/drawskills/visio-figure-builder/SKILL.md`
 
-### `visioskills/`
+### `agent/skills/visioskills/`
 
 Visio 原子执行层。
 
@@ -63,16 +63,16 @@ Visio 原子执行层。
 
 入口文件：
 
-- `visioskills/README.md`
-- `visioskills/visio-operator/SKILL.md`
-- `visioskills/OPERATIONS.md`
+- `agent/skills/visioskills/README.md`
+- `agent/skills/visioskills/visio-operator/SKILL.md`
+- `agent/skills/visioskills/OPERATIONS.md`
 
 - Note:
 - Current repo uses Visio as the first backend.
 - If Draw.io is added later, prefer a parallel backend directory such as `drawioskills/`.
-- Do not leak backend-specific details back into `plannerskills/` or `drawskills/`.
+- Do not leak backend-specific details back into `agent/skills/plannerskills/` or `agent/skills/drawskills/`.
 
-### `learningskills/`
+### `agent/skills/learningskills/`
 
 经验沉淀层。
 
@@ -90,8 +90,8 @@ Visio 原子执行层。
 
 入口文件：
 
-- `learningskills/README.md`
-- `learningskills/visio-iteration-journal/SKILL.md`
+- `agent/skills/learningskills/README.md`
+- `agent/skills/learningskills/visio-iteration-journal/SKILL.md`
 
 ### `Setup/`
 

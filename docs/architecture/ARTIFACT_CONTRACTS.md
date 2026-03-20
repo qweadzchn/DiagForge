@@ -14,7 +14,7 @@ If `LAYER_CONTRACTS.md` answers "who decides what", this file answers "what shou
 6. `OutputPreview/<job_name>/round-*.png`
 7. `OutputVSDX/<final>.vsdx`
 8. `Setup/jobs/<job_name>/reviews/round-*.json`
-9. `learningskills/lessons/*.md`
+9. `agent/skills/learningskills/lessons/*.md`
 
 Do not skip the middle artifacts and hide all logic inside one script.
 
@@ -144,7 +144,7 @@ Answers:
 
 This is round memory, not the long-term knowledge base.
 
-## 9. `learningskills/lessons/*.md`
+## 9. `agent/skills/learningskills/lessons/*.md`
 
 Owner: `learningskills`
 

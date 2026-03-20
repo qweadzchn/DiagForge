@@ -19,6 +19,7 @@ DiagForge 是一个实验性框架，目标是基于 Microsoft Visio，构建一
 - 第一次接触项目： [GET_STARTED.md](GET_STARTED.md)
 - 想跑一个绘图任务： [Setup/README.md](Setup/README.md)
 - 想让新 agent 进入仓库工作： [AGENT_START_HERE.md](AGENT_START_HERE.md)
+- agent 资产总入口： [agent/README.md](agent/README.md)
 - 想开发系统本身： [DEVELOPMENT.md](DEVELOPMENT.md)
 - 想看运行模式和写权限规则： [MODE_POLICY.md](MODE_POLICY.md)
 
@@ -35,13 +36,15 @@ DiagForge 不是要替代专业图表软件。
 
 - `Setup/`
   - job 配置、工作区初始化、执行脚本
-- `plannerskills/`
+- `agent/`
+  - 面向 agent 的可复用资产和技能入口
+- `agent/skills/plannerskills/`
   - 图形分析和任务编排
-- `drawskills/`
+- `agent/skills/drawskills/`
   - 布局、排版、间距、DrawDSL、绘图规则
-- `visioskills/`
+- `agent/skills/visioskills/`
   - Visio bridge、原子操作、执行指导
-- `learningskills/`
+- `agent/skills/learningskills/`
   - 从绘图轮次中提炼的可复用经验
 - `docs/`
   - 面向使用者、开发者、架构和调研的文档
@@ -66,7 +69,7 @@ DiagForge 不是要替代专业图表软件。
 - 基于 DrawDSL 的节点和连线执行
 - 文本框耦合和竖排文本支持
 - 基于预览图的 review 流程
-- 在 `learningskills/` 中沉淀可复用经验
+- 在 `agent/skills/learningskills/` 中沉淀可复用经验
 
 还不够强的部分：
 

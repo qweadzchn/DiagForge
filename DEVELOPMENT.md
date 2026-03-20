@@ -21,13 +21,13 @@ This file is the human entry point for working on the system itself rather than 
 
 ## Development Areas
 
-- `plannerskills/`
+- `agent/skills/plannerskills/`
   - figure understanding and task orchestration
-- `drawskills/`
+- `agent/skills/drawskills/`
   - layout rules, DrawDSL generation, figure-building logic
-- `visioskills/`
+- `agent/skills/visioskills/`
   - bridge, operator guidance, execution semantics
-- `learningskills/`
+- `agent/skills/learningskills/`
   - reusable lessons and promotion rules
 - `Setup/`
   - job bootstrap, schemas, execution scripts

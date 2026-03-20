@@ -15,6 +15,8 @@ The goal is "understand what to draw, why it should look that way, which control
 - `visioskills` executes explicit Visio operations reliably.
 - `learningskills` turns repeated failures and fixes into reusable lessons.
 
+These reusable skill layers now live under `agent/skills/`.
+
 Do not collapse these layers into one giant prompt.
 
 ## Read order for a new job
@@ -121,4 +123,4 @@ In `operation` mode, the agent should mostly stay inside the job workspace and o
 - `Setup/analysis.schema.json`
 - `Setup/plan.schema.json`
 - `Setup/round-review.schema.json`
-- `visioskills/OPERATIONS.md`
+- `agent/skills/visioskills/OPERATIONS.md`

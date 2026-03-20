@@ -16,7 +16,7 @@
 在 PowerShell：
 
 ```powershell
-cd <repo-root>\visioskills\bridge_server
+cd <repo-root>\agent\skills\visioskills\bridge_server
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt

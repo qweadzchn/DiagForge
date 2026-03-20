@@ -20,11 +20,13 @@ Without those capabilities, the repository can still be read, but not fully oper
 
 1. [PROJECT_MANIFEST.json](PROJECT_MANIFEST.json)
 2. [MODE_POLICY.md](MODE_POLICY.md)
-3. [Setup/README.md](Setup/README.md)
-4. [docs/architecture/LAYER_CONTRACTS.md](docs/architecture/LAYER_CONTRACTS.md)
-5. [docs/architecture/ARTIFACT_CONTRACTS.md](docs/architecture/ARTIFACT_CONTRACTS.md)
-6. [AGENT_GUIDE.md](AGENT_GUIDE.md)
-7. The current job workspace under `Setup/jobs/<job_name>/`
+3. [agent/README.md](agent/README.md)
+4. [agent/skills/README.md](agent/skills/README.md)
+5. [Setup/README.md](Setup/README.md)
+6. [docs/architecture/LAYER_CONTRACTS.md](docs/architecture/LAYER_CONTRACTS.md)
+7. [docs/architecture/ARTIFACT_CONTRACTS.md](docs/architecture/ARTIFACT_CONTRACTS.md)
+8. [AGENT_GUIDE.md](AGENT_GUIDE.md)
+9. The current job workspace under `Setup/jobs/<job_name>/`
 
 ## Default Working Rule
 

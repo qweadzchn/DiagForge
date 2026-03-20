@@ -43,10 +43,10 @@
         "OutputVSDX/**"
       ],
       "frozen_by_default": [
-        "plannerskills/**",
-        "drawskills/**",
-        "visioskills/**",
-        "learningskills/**",
+        "agent/skills/plannerskills/**",
+        "agent/skills/drawskills/**",
+        "agent/skills/visioskills/**",
+        "agent/skills/learningskills/**",
         "docs/**",
         "Setup/*.py",
         "Setup/*.schema.json",
@@ -59,10 +59,10 @@
       "writable_paths": [
         "InputPNG/**",
         "Setup/**",
-        "plannerskills/**",
-        "drawskills/**",
-        "visioskills/**",
-        "learningskills/**",
+        "agent/skills/plannerskills/**",
+        "agent/skills/drawskills/**",
+        "agent/skills/visioskills/**",
+        "agent/skills/learningskills/**",
         "docs/**",
         "OutputPreview/**",
         "OutputVSDX/**"
@@ -84,9 +84,9 @@
     ]
   },
   "skills": {
-    "planning": "plannerskills/",
-    "drawing": "drawskills/",
-    "execution": "visioskills/",
-    "learning": "learningskills/"
+    "planning": "agent/skills/plannerskills/",
+    "drawing": "agent/skills/drawskills/",
+    "execution": "agent/skills/visioskills/",
+    "learning": "agent/skills/learningskills/"
   }
 }

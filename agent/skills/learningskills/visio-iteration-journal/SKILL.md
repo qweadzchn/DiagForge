@@ -1,4 +1,4 @@
-﻿---
+---
 name: visio-iteration-journal
 description: Distill reusable lessons from Visio drawing iterations in DiagForge. Use when an agent encounters a drawing problem, layout failure, export surprise, bridge recovery issue, or any repeatable obstacle during Visio work and should convert that one-off fix into a generalized lesson stored under learningskills.
 ---
@@ -11,17 +11,17 @@ description: Distill reusable lessons from Visio drawing iterations in DiagForge
 
 优先读取：
 
-- `../../docs/architecture/LAYER_CONTRACTS.md`
-- `../../docs/architecture/ARTIFACT_CONTRACTS.md`
+- `../../../../docs/architecture/LAYER_CONTRACTS.md`
+- `../../../../docs/architecture/ARTIFACT_CONTRACTS.md`
 - `../templates/lesson-template.md`
-- `../../Setup/jobs/<job_name>/reviews/round-*.json`
+- `../../../../Setup/jobs/<job_name>/reviews/round-*.json`
 - 导出预览 PNG
 
 ## Output Contract
 
 这个 skill 有两个层次的产物：
 
-- `../../Setup/jobs/<job_name>/reviews/round-*.json`
+- `../../../../Setup/jobs/<job_name>/reviews/round-*.json`
 - `../lessons/*.md`
 
 如果只是本轮观察，还没抽象成通用规律，就先留在 `round-review.json`，不要直接写进 lesson。
@@ -56,7 +56,7 @@ lesson 必须写成 generalized knowledge，不写成一次任务的流水账。
 ## Files To Read
 
 - `../templates/lesson-template.md`
-- `../../AGENT_GUIDE.md`
-- `../../docs/architecture/LAYER_CONTRACTS.md`
+- `../../../../AGENT_GUIDE.md`
+- `../../../../docs/architecture/LAYER_CONTRACTS.md`
 - `../../drawskills/visio-figure-builder/references/layout-iteration-notes.md`
 

@@ -208,7 +208,7 @@ def main() -> None:
                 "drawdsl.json",
                 "preview PNG / final VSDX",
                 "reviews/round-*.json",
-                "learningskills/lessons/*.md",
+                "agent/skills/learningskills/lessons/*.md",
             ],
         },
         "bridge": probe,

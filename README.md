@@ -19,6 +19,7 @@ The repository is for building the workflow, contracts, and reusable skills arou
 - New to the project: [GET_STARTED.md](GET_STARTED.md)
 - Running a drawing job: [Setup/README.md](Setup/README.md)
 - Onboarding an agent: [AGENT_START_HERE.md](AGENT_START_HERE.md)
+- Agent asset index: [agent/README.md](agent/README.md)
 - Working on the system itself: [DEVELOPMENT.md](DEVELOPMENT.md)
 - Checking run modes and write rules: [MODE_POLICY.md](MODE_POLICY.md)
 
@@ -35,13 +36,15 @@ That workflow is split into clear layers so each part can improve without collap
 
 - `Setup/`
   - job config, workspace bootstrap, execution scripts
-- `plannerskills/`
+- `agent/`
+  - agent-facing reusable assets and skill entrypoints
+- `agent/skills/plannerskills/`
   - figure analysis and task orchestration
-- `drawskills/`
+- `agent/skills/drawskills/`
   - layout, typography, spacing, DrawDSL, drawing rules
-- `visioskills/`
+- `agent/skills/visioskills/`
   - Visio bridge, atomic operations, operator guidance
-- `learningskills/`
+- `agent/skills/learningskills/`
   - reusable lessons from drawing rounds
 - `docs/`
   - human docs, development docs, architecture docs, research notes
@@ -66,7 +69,7 @@ Working now:
 - DrawDSL-based node and connector execution
 - text-box coupling and vertical text support
 - preview-based review workflow
-- reusable lessons captured in `learningskills/`
+- reusable lessons captured in `agent/skills/learningskills/`
 
 Still incomplete:
 
