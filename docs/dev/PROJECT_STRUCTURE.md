@@ -125,13 +125,38 @@ Visio 原子执行层。
 
 用户放参考图的目录。
 
+这是运行输入，不是 agent 的长期资产，所以保留在仓库外层。
+
 ### `OutputPreview/`
 
 每轮导出 PNG 预览的目录。
 
+它应该保留在仓库外层，而不是放进 `agent/`：
+
+- 它是 run-specific 产物，不是 reusable skill asset
+- 人类 review 和脚本都需要稳定、直接的输出路径
+- 它和 `OutputVSDX/`、`InputPNG/` 一起组成任务运行面的外部接口
+
 ### `OutputVSDX/`
 
 最终 VSDX 结果的目录。
+
+它同样属于交付产物层，应该和 `OutputPreview/` 并列保留在外层。
+
+### `.runtime/`
+
+内部运行时目录。
+
+包含：
+
+- `bridge_exports/`: bridge 生成的一次性 PNG 暂存文件
+
+职责边界：
+
+- 只服务 bridge/runtime
+- 不作为人类 review 的正式输出目录
+- 不进入 `agent/`
+- 默认应被 git 忽略
 
 ### `docs/`
 

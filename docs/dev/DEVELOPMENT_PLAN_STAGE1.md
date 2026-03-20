@@ -19,11 +19,11 @@
 ## 1) 目前已知信息（含文档挂载路径）
 
 ### 1.1 任务与硬约束（官方任务书）
-- `INIT_TASK.md`
+- `docs/dev/history/INIT_TASK.md`
   - 约束：Agent 在 WSL，Visio 在 Windows
   - 目标：先调研后开发
   - 需定义：跨系统方案、visioskills API、drawskills 格式、Git 工作流
-- `INIT_TASK.litcoffee`
+- `docs/dev/history/INIT_TASK.litcoffee`
   - 新增要求：必须优先做开源组件调研（禁止重复造轮子）
   - 新增目录：`docs/dev/research/`
   - 新增交付：`docs/dev/research/01_OpenSource_Components.md`

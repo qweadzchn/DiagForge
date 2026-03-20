@@ -29,8 +29,11 @@ $env:VISIO_BRIDGE_TOKEN="replace-with-a-long-random-token"
 
 ### 5.（可选）设置导出目录（用于闭环截图）
 ```powershell
-$env:VISIO_BRIDGE_EXPORT_DIR="<repo-root>\exports"
+$env:VISIO_BRIDGE_EXPORT_DIR="<repo-root>\.runtime\bridge_exports"
 ```
+
+这里的目录是 bridge 的内部暂存目录，不是最终交付目录。
+最终给人看的预览图会进入 `OutputPreview/`，最终 `.vsdx` 会进入 `OutputVSDX/`。
 
 ### 6. 启动 Bridge
 ```powershell

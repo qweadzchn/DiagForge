@@ -7,7 +7,7 @@ The `docs/` directory is grouped by audience and purpose.
 - [human/README.md](human/README.md)
   - operational docs for running, reviewing, and setting up jobs
 - [dev/README.md](dev/README.md)
-  - development notes, project-structure docs, research support material
+  - development notes, project-structure docs, history, and research support material
 - [architecture/README.md](architecture/README.md)
   - system design, contracts, and cross-layer workflow rules
 

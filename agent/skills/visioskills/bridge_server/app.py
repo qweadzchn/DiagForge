@@ -19,13 +19,13 @@ except ImportError:  # allows `uvicorn app:app` from this directory
     from visio_adapter import VisioAdapter, VisioError
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[4]
 
 APP_NAME = "diagforge-visio-bridge"
 APP_VERSION = "0.1.0"
 TOKEN_ENV = "VISIO_BRIDGE_TOKEN"
 EXPORT_DIR_ENV = "VISIO_BRIDGE_EXPORT_DIR"
-DEFAULT_EXPORT_DIR = str(REPO_ROOT / "exports")
+DEFAULT_EXPORT_DIR = str(REPO_ROOT / ".runtime" / "bridge_exports")
 EXPORT_TICKET_TTL_S = 300
 
 

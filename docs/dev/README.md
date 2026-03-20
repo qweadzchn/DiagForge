@@ -8,6 +8,8 @@ This section contains development-facing documentation for people changing the r
   - directory responsibilities and reading order
 - [DEVELOPMENT_PLAN_STAGE1.md](DEVELOPMENT_PLAN_STAGE1.md)
   - earlier staged development plan
+- [history/README.md](history/README.md)
+  - archived development-origin documents and historical prompts
 - [research/01_OpenSource_Components.md](research/01_OpenSource_Components.md)
   - external research support material
 
