@@ -83,6 +83,11 @@ Still incomplete:
 - Human-facing operational docs: [docs/human/README.md](docs/human/README.md)
 - Development docs: [docs/dev/README.md](docs/dev/README.md)
 
+## License
+
+DiagForge is released under the MIT License.
+See [LICENSE](LICENSE).
+
 ## Backend Direction
 
 The current execution backend is Microsoft Visio.

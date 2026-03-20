@@ -83,6 +83,11 @@ DiagForge 不是要替代专业图表软件。
 - 面向使用者的操作文档： [docs/human/README.md](docs/human/README.md)
 - 面向开发者的文档： [docs/dev/README.md](docs/dev/README.md)
 
+## 许可证
+
+DiagForge 使用 MIT License。
+见 [LICENSE](LICENSE)。
+
 ## 后端方向
 
 当前执行后端是 Microsoft Visio。

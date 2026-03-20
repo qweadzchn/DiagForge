@@ -76,6 +76,13 @@ It also creates the standard job workspace.
 
 Use `development` when you are still building the system itself.
 
+## Final VSDX retention
+
+- `execution.keep_final_vsdx: true`
+  - save the final `.vsdx` into `OutputVSDX/` on the last configured round
+- `--save-final`
+  - force saving the current round as the final `.vsdx`
+
 ## Important rule
 
 Every round must leave evidence.

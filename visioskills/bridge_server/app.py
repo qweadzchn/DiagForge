@@ -558,7 +558,10 @@ def save_session(req: SaveSessionRequest, authorization: Optional[str] = Header(
         data = adapter.save_session(req.session_id, req.save_path)
         return {"ok": True, "data": data}
 
-    return GenericOk(**_idempotent(req.request_id, op))
+    try:
+        return GenericOk(**_idempotent(req.request_id, op))
+    except VisioError as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e
 
 
 @app.post("/session/close", response_model=GenericOk)
@@ -569,7 +572,10 @@ def close_session(req: CloseSessionRequest, authorization: Optional[str] = Heade
         data = adapter.close_session(req.session_id, req.save)
         return {"ok": True, "data": data}
 
-    return GenericOk(**_idempotent(req.request_id, op))
+    try:
+        return GenericOk(**_idempotent(req.request_id, op))
+    except VisioError as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e
 
 
 @app.post("/session/export_png", response_model=GenericOk)

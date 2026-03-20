@@ -4,7 +4,9 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import sys
+import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any
@@ -54,8 +56,15 @@ def _request_json(
         headers["Authorization"] = f"Bearer {token}"
     body = None if payload is None else json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(url, data=body, headers=headers, method=method)
-    with urllib.request.urlopen(req, timeout=timeout_s) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req, timeout=timeout_s) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace").strip()
+        message = f"{method} {url} failed with HTTP {exc.code}"
+        if detail:
+            message = f"{message}: {detail}"
+        raise RuntimeError(message) from exc
 
 
 def _download_file(url: str, target: Path, token: str | None = None, timeout_s: float = 120.0) -> None:
@@ -597,6 +606,7 @@ def main() -> None:
     config_path = Path(args.config).resolve()
     config_dir = config_path.parent
     config = _load_json(config_path)
+    execution_config = dict(config.get("execution", {}))
 
     preview_root = _resolve(config_dir, config["paths"]["preview_dir"])
     final_vsdx_dir = _resolve(config_dir, config["paths"]["final_vsdx_dir"])
@@ -609,6 +619,9 @@ def main() -> None:
     workspace_dir = (workspace_root / job_name).resolve()
     drawdsl_path = (workspace_dir / "drawdsl.json").resolve()
     execution_log_path = (workspace_dir / "reviews" / f"round-{args.round:02d}-execution.json").resolve()
+    max_rounds = int(execution_config.get("max_rounds", 1) or 1)
+    keep_final_vsdx = bool(execution_config.get("keep_final_vsdx", False))
+    effective_save_final = bool(args.save_final or (keep_final_vsdx and args.round >= max_rounds))
 
     drawdsl = _load_json(drawdsl_path)
     _normalize_node_styles(drawdsl)
@@ -802,6 +815,16 @@ def main() -> None:
                     }
                 )
 
+        save_result: dict[str, Any] | None = None
+        if effective_save_final:
+            final_vsdx_dir.mkdir(parents=True, exist_ok=True)
+            save_payload = {
+                "request_id": f"{job_name}-round-{args.round:02d}-save-final",
+                "session_id": session_id,
+                "save_path": str(final_vsdx_path),
+            }
+            save_result = _request_json("POST", f"{base_url}/session/save", payload=save_payload, token=token)
+
         preview_file_name = f"round-{args.round:02d}.png"
         preview_path = (preview_dir / preview_file_name).resolve()
         export_payload = {
@@ -810,18 +833,23 @@ def main() -> None:
             "file_name": preview_file_name,
         }
         export = _request_json("POST", f"{base_url}/session/export_png", payload=export_payload, token=token)
-        download_url = f"{base_url}{export['data']['download']['url']}"
-        _download_file(download_url, preview_path, token=token)
-
-        save_result: dict[str, Any] | None = None
-        if args.save_final:
-            final_vsdx_dir.mkdir(parents=True, exist_ok=True)
-            save_payload = {
-                "request_id": f"{job_name}-round-{args.round:02d}-save-final",
-                "session_id": session_id,
-                "save_path": str(final_vsdx_path),
-            }
-            save_result = _request_json("POST", f"{base_url}/session/save", payload=save_payload, token=token)
+        local_export_path = Path(str(export["data"].get("path") or "")).resolve() if export.get("data") else None
+        download = export.get("data", {}).get("download") if isinstance(export.get("data"), dict) else None
+        if isinstance(download, dict) and download.get("url"):
+            download_url = f"{base_url}{download['url']}"
+            try:
+                _download_file(download_url, preview_path, token=token)
+            except Exception:
+                if local_export_path and local_export_path.is_file():
+                    preview_path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(local_export_path, preview_path)
+                else:
+                    raise
+        elif local_export_path and local_export_path.is_file():
+            preview_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(local_export_path, preview_path)
+        else:
+            raise SystemExit("PNG export did not provide a usable download URL or local export path")
 
         close_payload = {
             "request_id": f"{job_name}-round-{args.round:02d}-close",
@@ -852,8 +880,8 @@ def main() -> None:
             "round": args.round,
             "drawdsl_path": str(drawdsl_path),
             "preview_path": str(preview_path),
-            "save_final": bool(args.save_final),
-            "final_vsdx_path": str(final_vsdx_path) if args.save_final else None,
+            "save_final": effective_save_final,
+            "final_vsdx_path": str(final_vsdx_path) if effective_save_final else None,
             "node_count": len(created_nodes),
             "edge_count": len(created_edges),
             "nodes": created_nodes,
