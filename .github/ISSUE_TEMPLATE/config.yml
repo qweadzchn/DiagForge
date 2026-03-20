@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Read the contribution guide
+    url: https://github.com/qweadzchn/DiagForge/blob/main/CONTRIBUTING.md
+    about: Learn how DiagForge routes review findings, proposals, lessons, and shared default behavior.
+  - name: Read the feedback promotion loop
+    url: https://github.com/qweadzchn/DiagForge/blob/main/docs/architecture/FEEDBACK_PROMOTION_LOOP.md
+    about: Understand how raw evidence becomes proposals, lessons, and shared capabilities.

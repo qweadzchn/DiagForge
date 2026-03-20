@@ -86,6 +86,7 @@ Still incomplete:
 - Architecture and contracts: [docs/architecture/README.md](docs/architecture/README.md)
 - Human-facing operational docs: [docs/human/README.md](docs/human/README.md)
 - Development docs: [docs/dev/README.md](docs/dev/README.md)
+- Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Early-stage contribution model
 
@@ -96,6 +97,9 @@ The repository now routes that feedback explicitly:
 - structural but still-hypothetical ideas go to `docs/dev/proposals/`
 - validated reusable patterns become lessons
 - mature defaults move into shared skills, scripts, schemas, or contracts
+
+For the full contribution routing guide, see [CONTRIBUTING.md](CONTRIBUTING.md).
+GitHub-side intake templates now live under `.github/ISSUE_TEMPLATE/` and `.github/PULL_REQUEST_TEMPLATE.md`.
 
 ## License
 
