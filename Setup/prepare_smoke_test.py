@@ -35,7 +35,7 @@ def _require(data: dict[str, Any], *keys: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Prepare a clean runtime workspace for a canonical DiagForge smoke test.")
+    parser = argparse.ArgumentParser(description="Prepare a clean runtime workspace for a canonical DrawForge smoke test.")
     parser.add_argument("--config", required=True, help="Path to a smoke-test config JSON")
     parser.add_argument("--force", action="store_true", help="Overwrite an existing runtime smoke-test workspace")
     args = parser.parse_args()

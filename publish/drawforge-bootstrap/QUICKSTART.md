@@ -4,16 +4,16 @@
 
 In the ClawHub publish UI, choose the whole folder:
 
-`publish/diagforge-bootstrap`
+`publish/drawforge-bootstrap`
 
-Do not upload the whole DiagForge repository.
+Do not upload the whole DrawForge repository.
 
 ## Suggested publish values
 
 - Slug:
-  `diagforge-bootstrap`
+  `drawforge-bootstrap`
 - Display name:
-  `DiagForge Bootstrap`
+  `DrawForge Bootstrap`
 - Version:
   `0.1.2`
 - Tags:
@@ -27,7 +27,7 @@ Do not upload the whole DiagForge repository.
 
 If the review UI flags `VISIO_BRIDGE_TOKEN` as sensitive, the intended meaning is:
 
-- it is a local token for the user's own DiagForge Visio bridge
+- it is a local token for the user's own DrawForge Visio bridge
 - it is not required for cloning or reading the repository
 - it is only needed for the bridge-backed smoke test and execution flow
 - users should verify the upstream GitHub repository before setting any local token

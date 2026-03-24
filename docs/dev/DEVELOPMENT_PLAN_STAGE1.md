@@ -1,4 +1,4 @@
-﻿# DiagForge 开发文档（阶段一）
+﻿# DrawForge 开发文档（阶段一）
 
 更新时间：2026-03-16 UTC
 
@@ -40,7 +40,7 @@
   - 给出分层架构（Intent/Planner/Compiler/Runtime/Bridge/COM）
 
 ### 1.3 仓库与协作状态
-- 已有远程：`git@github.com:qweadzchn/DiagForge.git`
+- 已有远程：`git@github.com:qweadzchn/DrawForge.git`
 - SSH 认证已打通（可访问 private 仓库）
 - 当前本地仍处于“调研资料阶段”，尚未进入业务实现
 
@@ -50,10 +50,10 @@
 
 > 注：以下是会话级确认，不等同于“技术规格冻结”。
 
-1. 继续推进 `DiagForge` 调研，且是**深度调研**，不是泛搜。
+1. 继续推进 `DrawForge` 调研，且是**深度调研**，不是泛搜。
 2. 项目目标是**真实可用科研系统**，明确不是 demo。
 3. GitHub 使用 private 仓库即可，不需要改 public。
-4. 远程地址采用 SSH（`git@github.com:qweadzchn/DiagForge.git`）。
+4. 远程地址采用 SSH（`git@github.com:qweadzchn/DrawForge.git`）。
 5. 允许按任务书先输出方案/文档，再等你确认后进入开发。
 
 ---

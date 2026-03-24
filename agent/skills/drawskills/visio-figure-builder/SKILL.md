@@ -1,6 +1,6 @@
 ﻿---
 name: visio-figure-builder
-description: Build publication-style figures in Microsoft Visio through the DiagForge bridge after a planner has already analyzed the source figure and produced a plan. Use when the agent needs to translate a drawing plan into layout, typography, spacing, line-style semantics, and DrawDSL, especially for research figures.
+description: Build publication-style figures in Microsoft Visio through the DrawForge bridge after a planner has already analyzed the source figure and produced a plan. Use when the agent needs to translate a drawing plan into layout, typography, spacing, line-style semantics, and DrawDSL, especially for research figures.
 ---
 
 # Visio Figure Builder

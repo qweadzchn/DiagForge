@@ -10,7 +10,7 @@
 
 ### 2. 拷贝项目代码到 Windows（或直接 git clone）
 建议路径：
-`<repo-root>`（例如 `D:\work\DiagForge`）
+`<repo-root>`（例如 `D:\work\DrawForge`）
 
 ### 3. 创建 venv 并安装 bridge 依赖
 在 PowerShell：

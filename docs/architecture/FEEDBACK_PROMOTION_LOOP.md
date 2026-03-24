@@ -1,6 +1,6 @@
 # Feedback Promotion Loop
 
-This document explains how DiagForge should treat feedback from agents and humans.
+This document explains how DrawForge should treat feedback from agents and humans.
 
 The repository is still early.
 That means suggestions, friction reports, and "this should be easier" observations are valuable.

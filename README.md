@@ -1,8 +1,8 @@
-# DiagForge
+# DrawForge
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-DiagForge is an experimental framework for turning reference diagrams into editable diagram assets through an agent-guided loop built on top of Microsoft Visio.
+DrawForge is an experimental framework for turning reference diagrams into editable diagram assets through an agent-guided loop built on top of Microsoft Visio.
 
 Today the project focuses on:
 
@@ -26,7 +26,7 @@ The repository is for building the workflow, contracts, and reusable skills arou
 
 ## What The Repository Tries To Do
 
-DiagForge is not trying to replace professional diagram tools.
+DrawForge is not trying to replace professional diagram tools.
 It is trying to make them usable through an explicit agent workflow:
 
 `intent -> analysis -> plan -> drawdsl -> backend -> preview -> review -> lesson`
@@ -90,7 +90,7 @@ Still incomplete:
 
 ## Early-stage contribution model
 
-DiagForge is still early, so evidence-backed agent feedback is useful.
+DrawForge is still early, so evidence-backed agent feedback is useful.
 The repository now routes that feedback explicitly:
 
 - round-specific findings stay in job reviews
@@ -103,7 +103,7 @@ GitHub-side intake templates now live under `.github/ISSUE_TEMPLATE/` and `.gith
 
 ## License
 
-DiagForge is released under the MIT License.
+DrawForge is released under the MIT License.
 See [LICENSE](LICENSE).
 
 ## Backend Direction

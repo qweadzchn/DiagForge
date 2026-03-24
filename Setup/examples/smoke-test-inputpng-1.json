@@ -8,7 +8,7 @@
   "task": {
     "input_png": "1.png",
     "final_vsdx_name": "1_smoke_test_final.vsdx",
-    "goal": "Run the canonical DiagForge cold-start smoke test against the benchmark figure InputReference/1.png and confirm that preflight, execution, preview export, and final VSDX saving all work.",
+    "goal": "Run the canonical DrawForge cold-start smoke test against the benchmark figure InputReference/1.png and confirm that preflight, execution, preview export, and final VSDX saving all work.",
     "diagram_hint": "mixed_layout",
     "description": "Canonical first-agent smoke test config. The runtime workspace is copied from the tracked inputpng-1 benchmark artifacts into .runtime/smoke-jobs/."
   },

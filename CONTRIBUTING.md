@@ -1,6 +1,6 @@
-# Contributing to DiagForge
+# Contributing to DrawForge
 
-DiagForge is trying to become more than a one-off diagram conversion demo.
+DrawForge is trying to become more than a one-off diagram conversion demo.
 The long-term goal is to accumulate reusable agent-facing capabilities around planning, drawing, execution, review, and learning.
 
 This means contributions are not only code patches.
@@ -175,7 +175,7 @@ Useful evidence includes:
 
 ## For users and external agents
 
-If you are using DiagForge outside the main maintained benchmark set, you do not need to upstream every local review.
+If you are using DrawForge outside the main maintained benchmark set, you do not need to upstream every local review.
 
 A good public contribution usually looks like one of these:
 

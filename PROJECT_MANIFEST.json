@@ -1,5 +1,5 @@
 {
-  "project": "DiagForge",
+  "project": "DrawForge",
   "manifest_version": "1.0",
   "status": "experimental",
   "default_backend": "visio",

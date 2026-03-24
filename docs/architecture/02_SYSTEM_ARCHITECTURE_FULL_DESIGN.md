@@ -1,6 +1,6 @@
 # 02_SYSTEM_ARCHITECTURE_FULL_DESIGN
 
-> 目标：给出 DiagForge 的完整可持续架构，确保“不是 demo，而是科研可用生产系统”。
+> 目标：给出 DrawForge 的完整可持续架构，确保“不是 demo，而是科研可用生产系统”。
 
 ---
 

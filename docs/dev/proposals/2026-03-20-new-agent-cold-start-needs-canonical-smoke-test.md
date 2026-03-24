@@ -6,7 +6,7 @@ implemented
 
 ## Summary
 
-DiagForge should have a documented and repeatable cold-start smoke test that a newly arrived agent can run before attempting open-ended diagram work.
+DrawForge should have a documented and repeatable cold-start smoke test that a newly arrived agent can run before attempting open-ended diagram work.
 
 ## Why this matters
 

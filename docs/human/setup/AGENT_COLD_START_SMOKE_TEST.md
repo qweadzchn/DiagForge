@@ -1,6 +1,6 @@
 # Agent Cold-start Smoke Test
 
-This is the canonical first-run validation path for a newly arrived DiagForge agent.
+This is the canonical first-run validation path for a newly arrived DrawForge agent.
 
 Use it when you want to answer:
 

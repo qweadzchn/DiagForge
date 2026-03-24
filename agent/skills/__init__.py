@@ -1,1 +1,1 @@
-"""Shared skill packages for DiagForge."""
+"""Shared skill packages for DrawForge."""

@@ -596,7 +596,7 @@ def _build_colors_payload(session_id: str, shape_id: int, style: dict[str, Any])
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Execute DrawDSL against the DiagForge Visio bridge.")
+    parser = argparse.ArgumentParser(description="Execute DrawDSL against the DrawForge Visio bridge.")
     parser.add_argument("--config", default="Setup/draw-job.local.json", help="Path to draw job config JSON")
     parser.add_argument("--round", type=int, required=True, help="Round number for preview naming and review tracking")
     parser.add_argument("--save-final", action="store_true", help="Save the resulting VSDX to the configured final path")

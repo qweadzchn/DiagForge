@@ -1,6 +1,6 @@
 # agent/skills
 
-This is the shared skill layer for DiagForge.
+This is the shared skill layer for DrawForge.
 
 The structure is intentionally split by responsibility:
 

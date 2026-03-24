@@ -1,10 +1,10 @@
 ---
-name: diagforge-bootstrap
-description: Bootstrap skill for DiagForge. Use this skill to onboard an agent into the DiagForge GitHub repository, understand the project structure, run the canonical cold-start smoke test, and begin working with the Visio-based drawing loop safely.
+name: drawforge-bootstrap
+description: Bootstrap skill for DrawForge. Use this skill to onboard an agent into the DrawForge GitHub repository, understand the project structure, run the canonical cold-start smoke test, and begin working with the Visio-based drawing loop safely.
 version: 0.1.2
 metadata:
   openclaw:
-    homepage: https://github.com/qweadzchn/DiagForge
+    homepage: https://github.com/qweadzchn/DrawForge
     requires:
       bins:
         - git
@@ -13,32 +13,32 @@ metadata:
         - VISIO_BRIDGE_TOKEN
 ---
 
-# DiagForge Bootstrap
+# DrawForge Bootstrap
 
-This is a lightweight onboarding skill for the DiagForge repository.
+This is a lightweight onboarding skill for the DrawForge repository.
 
-It is not the full DiagForge system.
+It is not the full DrawForge system.
 Its job is to guide an agent to the correct GitHub repository, documents, smoke test, and execution flow.
 
-DiagForge itself is an agent-driven closed loop built on top of Microsoft Visio.
+DrawForge itself is an agent-driven closed loop built on top of Microsoft Visio.
 Its goal is to turn reference figures into directly editable diagram assets by helping agents operate Visio more like a capable human user rather than as a blind API caller.
 
 ## What this skill can do
 
 This skill can help an agent:
 
-- understand what DiagForge is trying to achieve
+- understand what DrawForge is trying to achieve
 - find the correct GitHub repository and entry documents
 - avoid random first-run behavior and jump into the intended workflow
 - run the canonical cold-start smoke test
-- start reproducing reference figures through the DiagForge Visio loop
+- start reproducing reference figures through the DrawForge Visio loop
 - move toward a result that a human can continue editing directly in Visio
 
 ## Typical outcomes
 
 After using this skill, an agent should be able to:
 
-- explain the DiagForge workflow clearly
+- explain the DrawForge workflow clearly
 - bootstrap itself into the repository with the correct read order
 - validate that the Visio bridge and execution path are working
 - begin work on figure reproduction with better layer awareness
@@ -48,7 +48,7 @@ After using this skill, an agent should be able to:
 
 Use this skill when an agent needs to:
 
-- find the DiagForge source repository
+- find the DrawForge source repository
 - understand the top-level architecture quickly
 - avoid free-form blind retries
 - run the canonical cold-start smoke test
@@ -58,7 +58,7 @@ Use this skill when an agent needs to:
 
 Use this skill when:
 
-- an agent is entering DiagForge for the first time
+- an agent is entering DrawForge for the first time
 - a new environment needs to be validated before real drawing work
 - a user wants an agent to help reproduce a figure through Visio
 - the goal is not only to look similar to the reference, but to obtain a directly editable diagram asset
@@ -70,7 +70,7 @@ It does not include Visio bridge code, benchmark PNGs, or runtime artifacts.
 
 The full project lives in the GitHub repository:
 
-`https://github.com/qweadzchn/DiagForge`
+`https://github.com/qweadzchn/DrawForge`
 
 ## Recommended workflow
 
@@ -82,8 +82,8 @@ The full project lives in the GitHub repository:
 ## Clone the repository
 
 ```bash
-git clone git@github.com:qweadzchn/DiagForge.git
-cd DiagForge
+git clone git@github.com:qweadzchn/DrawForge.git
+cd DrawForge
 ```
 
 If SSH is not available, use HTTPS instead.
@@ -115,7 +115,7 @@ Expected outputs:
 
 ## Routing rule
 
-When working inside DiagForge:
+When working inside DrawForge:
 
 - if the issue is round-specific, keep it in review artifacts
 - if it looks structural but still needs validation, write a proposal

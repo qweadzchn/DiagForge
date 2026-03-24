@@ -1,1 +1,1 @@
-"""DiagForge agent-facing packages."""
+"""DrawForge agent-facing packages."""

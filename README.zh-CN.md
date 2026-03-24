@@ -1,8 +1,8 @@
-# DiagForge
+# DrawForge
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-DiagForge 是一个实验性框架，目标是基于 Microsoft Visio，构建一套由 agent 驱动的闭环流程，把参考图逐步转成可编辑的图表资产。
+DrawForge 是一个实验性框架，目标是基于 Microsoft Visio，构建一套由 agent 驱动的闭环流程，把参考图逐步转成可编辑的图表资产。
 
 当前项目主要关注：
 
@@ -25,7 +25,7 @@ DiagForge 是一个实验性框架，目标是基于 Microsoft Visio，构建一
 
 ## 这个仓库在做什么
 
-DiagForge 不是要替代专业图表软件。
+DrawForge 不是要替代专业图表软件。
 它更像是在尝试把这些软件纳入一套清晰的 agent 工作流：
 
 `intent -> analysis -> plan -> drawdsl -> backend -> preview -> review -> lesson`
@@ -88,7 +88,7 @@ DiagForge 不是要替代专业图表软件。
 
 ## 许可证
 
-DiagForge 使用 MIT License。
+DrawForge 使用 MIT License。
 见 [LICENSE](LICENSE)。
 
 ## 后端方向

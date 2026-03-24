@@ -1,6 +1,6 @@
 # agent
 
-This directory holds the reusable agent-facing assets of DiagForge.
+This directory holds the reusable agent-facing assets of DrawForge.
 
 Use it when the question is not just "how do I run one job?" but:
 

@@ -1,6 +1,6 @@
 ---
 name: visio-iteration-journal
-description: Distill reusable lessons from Visio drawing iterations in DiagForge. Use when an agent encounters a drawing problem, layout failure, export surprise, bridge recovery issue, or any repeatable obstacle during Visio work and should convert that one-off fix into a generalized lesson stored under learningskills.
+description: Distill reusable lessons from Visio drawing iterations in DrawForge. Use when an agent encounters a drawing problem, layout failure, export surprise, bridge recovery issue, or any repeatable obstacle during Visio work and should convert that one-off fix into a generalized lesson stored under learningskills.
 ---
 
 # Visio Iteration Journal

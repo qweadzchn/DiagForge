@@ -1,11 +1,11 @@
-# DiagForge Bootstrap Skill
+# DrawForge Bootstrap Skill
 
-This folder is the ClawHub publishing package for a lightweight DiagForge bootstrap skill.
+This folder is the ClawHub publishing package for a lightweight DrawForge bootstrap skill.
 
 It intentionally contains only guidance files.
-The full DiagForge system remains in the GitHub repository:
+The full DrawForge system remains in the GitHub repository:
 
-`https://github.com/qweadzchn/DiagForge`
+`https://github.com/qweadzchn/DrawForge`
 
 ## Publish intent
 

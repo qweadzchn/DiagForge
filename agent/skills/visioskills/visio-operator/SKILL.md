@@ -1,6 +1,6 @@
 ---
 name: visio-operator
-description: Operate Microsoft Visio through the DiagForge bridge with stable atomic actions. Use when an agent needs to create sessions, add/edit/connect/style shapes, save documents, export PNG previews, or execute a prepared drawing spec without taking over planning decisions.
+description: Operate Microsoft Visio through the DrawForge bridge with stable atomic actions. Use when an agent needs to create sessions, add/edit/connect/style shapes, save documents, export PNG previews, or execute a prepared drawing spec without taking over planning decisions.
 ---
 
 # Visio Operator

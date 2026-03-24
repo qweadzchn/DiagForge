@@ -70,7 +70,7 @@ def _probe_bridge(base_url: str, token: str | None) -> dict[str, Any]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Validate and bootstrap a DiagForge draw job workspace.")
+    parser = argparse.ArgumentParser(description="Validate and bootstrap a DrawForge draw job workspace.")
     parser.add_argument("--config", default="Setup/draw-job.local.json", help="Path to job config JSON")
     args = parser.parse_args()
 
